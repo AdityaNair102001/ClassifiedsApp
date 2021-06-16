@@ -11,13 +11,12 @@
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="1dp"
         android:padding="10dp"
         android:paddingBottom="10dp"
-        app:cardCornerRadius="30dp"
+        app:cardCornerRadius="10dp"
         app:strokeColor="@color/colorPrimary"
-        app:strokeWidth="0.5dp"
-        >
+        app:strokeWidth="0.5dp">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +31,9 @@
                 android:layout_margin="10dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:src="@drawable/dogprofile"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -44,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:text="aur bata"
+                android:text="textview"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toEndOf="@+id/ProfilePicture"
                 app:layout_constraintTop_toTopOf="parent" />

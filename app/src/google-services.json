@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "30936598361",
+    "project_id": "fir-project-2b9f4",
+    "storage_bucket": "fir-project-2b9f4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:30936598361:android:0f7f0954e4289e1ff82e48",
+        "android_client_info": {
+          "package_name": "com.phoenixcorp.classifiedsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "30936598361-ffrbco09emd69rmleei58ve1dupglsmq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDK4D8NyANpcKK0vxUJuNEgEPPooiIB4z8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "30936598361-ffrbco09emd69rmleei58ve1dupglsmq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

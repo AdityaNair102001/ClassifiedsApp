@@ -6,4 +6,5 @@
     android:layout_height="match_parent"
     android:id="@+id/ChatList"
     android:background="@color/white"
+    android:layout_marginBottom="55dp"
     tools:context=".ChatFragment"/>

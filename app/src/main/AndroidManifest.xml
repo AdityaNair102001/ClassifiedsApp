@@ -9,11 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ClassifiedsApp">
-        <activity android:name=".DefaultPageActivity"
-                  android:theme="@style/Theme.ClassifiedsApp.NoActionBar"
-        />
-        <activity android:name=".SignupActivity"
-                  android:theme="@style/Theme.ClassifiedsApp.NoActionBar"/>
+        <activity android:name=".ChatActivity"></activity>
+        <activity
+            android:name=".DefaultPageActivity"
+            android:theme="@style/Theme.ClassifiedsApp.NoActionBar" />
+        <activity
+            android:name=".SignupActivity"
+            android:theme="@style/Theme.ClassifiedsApp.NoActionBar" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"

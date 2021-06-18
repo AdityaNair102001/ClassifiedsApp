@@ -1,5 +1,6 @@
 package com.phoenixcorp.classifiedsapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +8,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +18,8 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
+
+    Button logout_btn;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,7 +64,26 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        View v = inflater.inflate(R.layout.fragment_profile, container, false);
+        logout_btn = v.findViewById(R.id.logout);
+        logout_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logout(view);
+            }
+        });
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        return v;
     }
+
+    public void logout(View view) {
+        FirebaseAuth.getInstance().signOut();//logout
+        startActivity(new Intent(getActivity(),LoginActivity.class));
+        getActivity().finish();
+    }
+
+
+
+
 }

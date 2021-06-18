@@ -7,10 +7,24 @@
     android:background="@color/white"
     tools:context=".SignupActivity">
 
-    <TextView
-        android:id="@+id/textView2"
+
+    <Button
+        android:id="@+id/LogIn"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="96dp"
+        android:text="Already have an account?"
+        android:textColor="@color/colorPrimaryVariant"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SignUp" />
+
+    <TextView
+        android:id="@+id/Signup_text"
+        android:layout_width="179dp"
+        android:layout_height="58dp"
         android:layout_marginTop="24dp"
         android:fontFamily="@font/lateef"
         android:text="SIGN UP"
@@ -21,17 +35,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/outlinedTextField"
+        android:id="@+id/Email_S"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="251dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:hint="@string/email"
-        android:textColor="@color/black"
         android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/Username_S"
         app:boxCornerRadiusBottomEnd="30dp"
         app:boxCornerRadiusBottomStart="30dp"
         app:boxCornerRadiusTopEnd="30dp"
@@ -40,14 +53,17 @@
         app:boxStrokeColor="@color/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:textColor="@color/black"
+            android:id="@+id/Email1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:cursorVisible="true"
+            android:textColor="@color/design_default_color_on_secondary"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/outlinedTextField2"
+        android:id="@+id/Username_S"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="251dp"
         android:layout_height="wrap_content"
@@ -62,17 +78,20 @@
         app:hintTextColor="#E8768D"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outlinedTextField">
+        app:layout_constraintTop_toBottomOf="@+id/Signup_text">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:textColor="@color/black"
+            android:id="@+id/Username1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:cursorVisible="true"
+            android:textColor="@color/design_default_color_on_secondary"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/outlinedTextField3"
+        android:id="@+id/Password_S"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="251dp"
         android:layout_height="wrap_content"
@@ -87,23 +106,25 @@
         app:hintTextColor="#E8768D"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outlinedTextField2">
+        app:layout_constraintTop_toBottomOf="@+id/Email_S">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:textColor="@color/black"
+            android:id="@+id/Password1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:cursorVisible="true"
+            android:textColor="@color/design_default_color_on_secondary"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/outlinedTextField4"
+        android:id="@+id/Phone_S"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="251dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:hint="@string/re_enter"
+        android:hint="@string/phone"
         android:textColorHint="@color/black"
         app:boxCornerRadiusBottomEnd="30dp"
         app:boxCornerRadiusBottomStart="30dp"
@@ -113,29 +134,33 @@
         app:hintTextColor="#E8768D"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outlinedTextField3">
+        app:layout_constraintTop_toBottomOf="@+id/Password_S">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:textColor="@color/black"
+            android:id="@+id/Phone1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
+            android:inputType="phone"
+            android:cursorVisible="true"
+            android:textColor="@color/design_default_color_on_secondary"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/Login"
+        android:id="@+id/SignUp"
         android:layout_width="150dp"
         android:layout_height="54dp"
-        android:layout_marginBottom="64dp"
         android:text="Sign up"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="18sp"
         app:backgroundTint="@color/colorPrimary"
         app:cornerRadius="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Phone_S"
+        app:layout_constraintVertical_bias="0.204"
         app:strokeColor="@color/black"
         app:strokeWidth="0.62dp" />
 

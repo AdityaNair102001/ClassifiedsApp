@@ -27,10 +27,10 @@
 <!--    </com.google.android.material.appbar.AppBarLayout>-->
 
     <TextView
-        android:id="@+id/Pawspace"
-        android:layout_width="240dp"
-        android:layout_height="63dp"
-        android:layout_marginTop="24dp"
+        android:id="@+id/Title"
+        android:layout_width="305dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="100dp"
         android:fontFamily="@font/greatvibes"
         android:includeFontPadding="false"
         android:paddingStart="15dp"
@@ -43,12 +43,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/outlinedTextField"
+        android:id="@+id/Email_L"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="251dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:hint="@string/username"
+        android:layout_marginTop="60dp"
+        android:hint="@string/email"
         android:textColorHint="@color/black"
         app:boxCornerRadiusBottomEnd="30dp"
         app:boxCornerRadiusBottomStart="30dp"
@@ -58,10 +58,10 @@
         app:hintTextColor="#E8768D"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Pawspace">
+        app:layout_constraintTop_toBottomOf="@+id/Title">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/username"
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:cursorVisible="true"
@@ -71,7 +71,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/outlinedTextField2"
+        android:id="@+id/Password_L"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="251dp"
         android:layout_height="wrap_content"
@@ -84,9 +84,9 @@
         app:boxCornerRadiusTopStart="30dp"
         app:endIconMode="password_toggle"
         app:hintTextColor="#E8768D"
-        app:layout_constraintEnd_toEndOf="@+id/outlinedTextField"
-        app:layout_constraintStart_toStartOf="@+id/outlinedTextField"
-        app:layout_constraintTop_toBottomOf="@+id/outlinedTextField"
+        app:layout_constraintEnd_toEndOf="@+id/Email_L"
+        app:layout_constraintStart_toStartOf="@+id/Email_L"
+        app:layout_constraintTop_toBottomOf="@+id/Email_L"
         app:boxStrokeColor="@color/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -124,35 +124,22 @@
         android:layout_marginTop="16dp"
         android:text="Forgot Password?"
         android:textColor="@color/black"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="@+id/outlinedTextField2"
-        app:layout_constraintTop_toBottomOf="@+id/outlinedTextField2" />
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/Password_L"
+        app:layout_constraintTop_toBottomOf="@+id/Password_L" />
 
     <Button
         android:id="@+id/SignUp"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="52dp"
-        android:text="SignUp"
-        android:textColor="@color/colorPrimaryVariant"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/signuptext"
-        app:layout_constraintTop_toBottomOf="@+id/Login" />
-
-    <TextView
-        android:id="@+id/signuptext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="108dp"
         android:text="Don't have an account?"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/SignUp"
-        app:layout_constraintStart_toStartOf="@+id/Login"
-        app:layout_constraintTop_toTopOf="@+id/SignUp" />
-
+        android:textColor="@color/colorPrimaryVariant"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Login" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

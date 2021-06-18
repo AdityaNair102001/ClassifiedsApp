@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.transition.Slide;
 import android.view.View;
 import android.widget.Button;
 
@@ -19,6 +20,7 @@ import com.smarteist.autoimageslider.SliderView;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.net.URI;
 import java.util.ArrayList;
@@ -26,8 +28,10 @@ import java.util.List;
 
 public class NewPostActivity extends AppCompatActivity {
 
-//    Bitmap[] images;
+
     ArrayList<Uri> images;
+    SliderView sliderView;
+    SliderAdapter adapter;
 
 
     @Override
@@ -36,8 +40,11 @@ public class NewPostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_post);
 
 
-        SliderView sliderView = findViewById(R.id.imageSlider);
-        sliderView.setSliderAdapter(new SliderAdapter(images));
+         sliderView = findViewById(R.id.imageSlider);
+
+         adapter=new SliderAdapter((images));
+
+
 
         Button selectImages=findViewById(R.id.selectImages);
 
@@ -57,15 +64,24 @@ public class NewPostActivity extends AppCompatActivity {
             intent.setType("image/*");
             startActivityForResult(intent,1);
 
-
-
-
            });
 
     }
+
+
+    private void adapterHandler(ArrayList<Uri> images) {
+        SliderAdapter adapter=new SliderAdapter(images);
+        sliderView.setSliderAdapter(adapter);
+
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        images = new ArrayList<>();
+
 
         if(requestCode==1 && resultCode==RESULT_OK ){
             List<Bitmap> bitmaps = new ArrayList<>();
@@ -75,51 +91,19 @@ public class NewPostActivity extends AppCompatActivity {
                 for(int i=0;i<clipData.getItemCount();i++){
                     Uri imageURI=clipData.getItemAt(i).getUri();
                     images.add(imageURI);
-//                    try{
-//
-//                        InputStream is = getContentResolver().openInputStream(imageURI);
-//
-//                        Bitmap bitmap= BitmapFactory.decodeStream(is);
-//
-//                        bitmaps.add(bitmap);
-//
-//
-//                    }catch (FileNotFoundException e){
-//                        e.printStackTrace();
-//                    }
+                    adapterHandler(images);
+
                 }
             }else{
                 Uri imageURI=data.getData();
                 images.add(imageURI);
+                adapterHandler(images);
 
-//                try {
-//                    InputStream is = getContentResolver().openInputStream(imageURI);
-//                    Bitmap bitmap= BitmapFactory.decodeStream(is);
-//                    bitmaps.add(bitmap);
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                }
 
             }
 
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    for(Bitmap b:bitmaps){
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                images[]
-//                            }
-//                        });
-//                    }
-//                }
-//            }).start();
-//
-//            for(int i=0;i<bitmaps.size();i++){
-//                images[i]=bitmaps.get(i);
-//            }
 
         }
     }
+
 }

@@ -44,33 +44,33 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
-        receiverImage = getIntent().getStringExtra("ReceiverImage");
-        receiverName = getIntent().getStringExtra("name");
-        receiverUID = getIntent().getStringExtra("UID");
-
-        profileImg = findViewById(R.id.profile_image);
-
-        Picasso.get().load(receiverImage).into(profileImg);
-        receivername = findViewById(R.id.receiverName);
-        receivername.setText("" + receiverName);
-
-        sendBtn = findViewById(R.id.sendBtn);
-        chatMsg = findViewById(R.id.chatMessage);
-
-        senderUID = firebaseAuth.getUid();
-        senderRoom = senderUID + receiverUID;
-        receiverRoom = receiverUID + senderUID;
-
-        messageAdapter = findViewById(R.id.messageAdapter);
-        messagesArrayList = new ArrayList<Messages>();
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setStackFromEnd(true);
-//        adapter = new ChatListAdapter(ChatActivity.this, messagesArrayList);
-        messageAdapter.setLayoutManager(linearLayoutManager);
-
-        messageAdapter.setAdapter(adapter);
+//
+//        receiverImage = getIntent().getStringExtra("ReceiverImage");
+//        receiverName = getIntent().getStringExtra("name");
+//        receiverUID = getIntent().getStringExtra("UID");
+//
+//        profileImg = findViewById(R.id.profile_image);
+//
+//        Picasso.get().load(receiverImage).into(profileImg);
+//        receivername = findViewById(R.id.receiverName);
+//        receivername.setText("" + receiverName);
+//
+//        sendBtn = findViewById(R.id.sendBtn);
+//        chatMsg = findViewById(R.id.chatMessage);
+//
+//        senderUID = firebaseAuth.getUid();
+//        senderRoom = senderUID + receiverUID;
+//        receiverRoom = receiverUID + senderUID;
+//
+//        messageAdapter = findViewById(R.id.messageAdapter);
+//        messagesArrayList = new ArrayList<Messages>();
+//
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+//        linearLayoutManager.setStackFromEnd(true);
+////        adapter = new ChatListAdapter(ChatActivity.this, messagesArrayList);
+//        messageAdapter.setLayoutManager(linearLayoutManager);
+//
+//        messageAdapter.setAdapter(adapter);
 
 
     }

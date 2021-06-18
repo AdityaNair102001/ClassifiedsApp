@@ -9,18 +9,33 @@ import android.widget.ImageView;
 
 import com.smarteist.autoimageslider.SliderViewAdapter;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
-public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapterVH> {
+public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapterVH>{
 
-
-//    Bitmap[] images;
      ArrayList<Uri> images;
 
     public SliderAdapter(ArrayList<Uri> images) {
-//        this.context = context;
         this.images=images;
+    }
+
+
+    public void renewItems(ArrayList<Uri> sliderItems) {
+        this.images = sliderItems;
+        notifyDataSetChanged();
+    }
+
+    public void deleteItem(int position) {
+        this.images.remove(position);
+        notifyDataSetChanged();
+    }
+
+    public void addItem(Uri sliderItem) {
+        this.images.add(sliderItem);
+        notifyDataSetChanged();
     }
 
 
@@ -40,7 +55,7 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapter
         return images.size();
     }
 
-     class SliderAdapterVH extends SliderViewAdapter.ViewHolder {
+     static class SliderAdapterVH extends SliderViewAdapter.ViewHolder {
 
         ImageView imageView;
 

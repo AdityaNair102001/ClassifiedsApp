@@ -90,7 +90,7 @@ public class ChatFragment extends Fragment {
 
 
 
-        int flag = 0;
+        int flag = 2;
         if(flag == 1)
         {
             View v = inflater.inflate(R.layout.empty_chat_layout, container, false);

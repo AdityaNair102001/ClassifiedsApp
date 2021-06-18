@@ -104,7 +104,7 @@
         android:layout_width="150dp"
         android:layout_height="54dp"
         android:text="Login"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="18sp"
         app:cornerRadius="25dp"
         app:backgroundTint="@color/colorPrimary"

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.phoenixcorp.classifiedsapp">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
+
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
@@ -14,6 +16,15 @@
         <activity
             android:name=".ChatActivity"
             android:theme="@style/Theme.ClassifiedsApp.NoActionBar"/>
+        <activity
+            android:name=".DefaultPageActivity"
+            android:theme="@style/Theme.ClassifiedsApp.NoActionBar" />
+        <activity
+            android:name=".SignupActivity"
+            android:theme="@style/Theme.ClassifiedsApp.NoActionBar" />
+        <activity android:name=".NewPostActivity"
+            android:theme="@style/Theme.ClassifiedsApp.NoActionBar"
+        />
         <activity
             android:name=".DefaultPageActivity"
             android:theme="@style/Theme.ClassifiedsApp.NoActionBar" />

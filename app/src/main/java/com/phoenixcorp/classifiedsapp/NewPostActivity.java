@@ -16,6 +16,8 @@ import android.transition.Slide;
 import android.view.View;
 import android.widget.Button;
 
+//import com.smarteist.autoimageslider.SliderView;
+
 import com.smarteist.autoimageslider.SliderView;
 
 import java.io.FileNotFoundException;
@@ -92,14 +94,11 @@ public class NewPostActivity extends AppCompatActivity {
                     Uri imageURI=clipData.getItemAt(i).getUri();
                     images.add(imageURI);
                     adapterHandler(images);
-
                 }
             }else{
                 Uri imageURI=data.getData();
                 images.add(imageURI);
                 adapterHandler(images);
-
-
             }
 
 

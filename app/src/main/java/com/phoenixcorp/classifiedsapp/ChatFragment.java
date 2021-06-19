@@ -1,14 +1,24 @@
 package com.phoenixcorp.classifiedsapp;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.ContentView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.List;
 
@@ -50,6 +60,8 @@ public class ChatFragment extends Fragment {
         return fragment;
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,20 +73,52 @@ public class ChatFragment extends Fragment {
 
     RecyclerView ChatList;
 
+    FirebaseAuth auth;
+    FirebaseFirestore firestore;
+    FirebaseStorage storage;
+    TextView exploreBtn;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        auth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
 
-        View view = inflater.inflate(R.layout.fragment_chat,container,false);
-        ChatList=view.findViewById(R.id.ChatList);
-        ChatList.setHasFixedSize(true);
-        ChatList.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL,false));
-        String[] names={"Labrador", "Pomerian", "Pug","Pitbull","Stray","Indian","Golden Retriever", "Husky", "Labrador","Husky","Indian","Pug","Stray"};
+
+
+
+        int flag = 2;
+        if(flag == 1)
+        {
+            View v = inflater.inflate(R.layout.empty_chat_layout, container, false);
+            exploreBtn = (TextView) v.findViewById(R.id.explore_ads_button);
+            exploreBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(getActivity(), DefaultPageActivity.class));
+
+                }
+            });
+            return v;
+        }
+        else {
+
+            View view = inflater.inflate(R.layout.fragment_chat, container, false);
+            ChatList = view.findViewById(R.id.ChatList);
+            ChatList.setHasFixedSize(true);
+            ChatList.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
+
+            String[] names = {"Labrador", "Pomerian", "Pug", "Pitbull", "Stray", "Indian", "Golden Retriever", "Husky", "Labrador", "Husky", "Indian", "Pug", "Stray"};
 //        String[] loacation={"Kalyan","Ulhasnagar","Kharghar","CST","Dadar","Thane","Kurla","Andheri","Dombivili","Kalyan","Khadakpada","Radha Nagar","Scion"};
-        ChatList.setAdapter(new ChatListAdapter(names));
+            ChatList.setAdapter(new ChatListAdapter(names, ChatFragment.this));
 
-        return view;
+
+            return view;
+
+        }
+
     }
 }

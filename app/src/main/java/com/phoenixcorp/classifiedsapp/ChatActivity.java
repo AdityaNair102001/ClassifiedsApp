@@ -1,5 +1,6 @@
 package com.phoenixcorp.classifiedsapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.collection.CircularArray;
@@ -7,14 +8,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -44,19 +50,22 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
 //
 //        receiverImage = getIntent().getStringExtra("ReceiverImage");
 //        receiverName = getIntent().getStringExtra("name");
 //        receiverUID = getIntent().getStringExtra("UID");
 //
-//        profileImg = findViewById(R.id.profile_image);
+        profileImg = findViewById(R.id.profile_image);
 //
 //        Picasso.get().load(receiverImage).into(profileImg);
 //        receivername = findViewById(R.id.receiverName);
 //        receivername.setText("" + receiverName);
 //
-//        sendBtn = findViewById(R.id.sendBtn);
-//        chatMsg = findViewById(R.id.chatMessage);
+        sendBtn = findViewById(R.id.sendBtn);
+        chatMsg = findViewById(R.id.chatMessage);
 //
 //        senderUID = firebaseAuth.getUid();
 //        senderRoom = senderUID + receiverUID;
@@ -72,6 +81,31 @@ public class ChatActivity extends AppCompatActivity {
 //
 //        messageAdapter.setAdapter(adapter);
 
+
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String chat = chatMsg.getText().toString();
+                chat.trim();
+                if(chat.isEmpty()){
+                    Toast.makeText(ChatActivity.this, "Please Enter some Message", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                chatMsg.setText("");
+                Date date = new Date();
+                Messages m = new Messages(chat, senderUID, date.getTime());
+
+
+                firestore.
+                        collection("chats").
+                        document(senderUID).set(m).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                    }
+                });
+
+            }
+        });
 
     }
 }

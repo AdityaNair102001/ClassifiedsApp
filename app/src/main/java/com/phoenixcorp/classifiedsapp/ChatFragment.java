@@ -1,26 +1,36 @@
 package com.phoenixcorp.classifiedsapp;
 
-import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 
-import androidx.annotation.ContentView;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
-import java.util.List;
+import org.w3c.dom.Document;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -78,6 +88,11 @@ public class ChatFragment extends Fragment {
     FirebaseStorage storage;
     TextView exploreBtn;
 
+    ArrayList<Users> usersArrayList;
+
+    ChatListAdapter adapter;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -86,39 +101,64 @@ public class ChatFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
+        usersArrayList = new ArrayList<>();
 
 
 
+        CollectionReference reference = firestore.collection("users");
 
-        int flag = 2;
-        if(flag == 1)
-        {
-            View v = inflater.inflate(R.layout.empty_chat_layout, container, false);
-            exploreBtn = (TextView) v.findViewById(R.id.explore_ads_button);
-            exploreBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(getActivity(), DefaultPageActivity.class));
-
+        reference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+//                    if(documentSnapshot.getId() != auth.getUid()) {
+                    Users users = documentSnapshot.toObject(Users.class);
+                    usersArrayList.add(users);
                 }
-            });
-            return v;
-        }
-        else {
-
-            View view = inflater.inflate(R.layout.fragment_chat, container, false);
-            ChatList = view.findViewById(R.id.ChatList);
-            ChatList.setHasFixedSize(true);
-            ChatList.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
-
-            String[] names = {"Labrador", "Pomerian", "Pug", "Pitbull", "Stray", "Indian", "Golden Retriever", "Husky", "Labrador", "Husky", "Indian", "Pug", "Stray"};
-//        String[] loacation={"Kalyan","Ulhasnagar","Kharghar","CST","Dadar","Thane","Kurla","Andheri","Dombivili","Kalyan","Khadakpada","Radha Nagar","Scion"};
-            ChatList.setAdapter(new ChatListAdapter(names, ChatFragment.this));
+                adapter.notifyDataSetChanged();
+            }
+        });
 
 
-            return view;
+        View view = inflater.inflate(R.layout.fragment_chat, container, false);
+        ChatList = view.findViewById(R.id.ChatList);
+        ChatList.setHasFixedSize(true);
+        ChatList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
-        }
+        adapter = new ChatListAdapter(usersArrayList, this);
+        ChatList.setAdapter(adapter);
+
+        return view;
+
+
+
+//        int flag = 0;
+//
+//        if(flag == 5){
+//            View v = inflater.inflate(R.layout.fragment_chat, container, false);
+//            ChatList = v.findViewById(R.id.ChatList);
+//            ChatList.setHasFixedSize(true);
+//            ChatList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+//
+//            ArrayList<Users> names = new ArrayList<>(); //= {"Labrador", "Pomerian", "Pug", "Pitbull", "Stray", "Indian", "Golden Retriever", "Husky", "Labrador", "Husky", "Indian", "Pug", "Stray"};
+////            names.add("1En97XiEz8g1lfwpm1KWKs0SVtj2", "Elon Musk", "anuragpatil134@gmail.com", "https://firebasestorage.googleapis.com/v0/b/mini-project--ii.appspot.com/o/displaypicture.png?alt=media&token=c371684a-8c1b-4988-b2e7-251cac680fc5");
+//            ChatList.setAdapter(new ChatListAdapter(names, ChatFragment.this));
+//
+//            return view;
+//        }
+//        else{
+//            View v = inflater.inflate(R.layout.empty_chat_layout, container, false);
+//            exploreBtn = (TextView) v.findViewById(R.id.explore_ads_button);
+//            exploreBtn.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    startActivity(new Intent(getActivity(), DefaultPageActivity.class));
+//
+//                }
+//            });
+//
+//            return v;
+//        }
 
     }
 }

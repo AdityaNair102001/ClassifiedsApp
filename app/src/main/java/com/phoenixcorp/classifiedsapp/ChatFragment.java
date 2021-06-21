@@ -24,6 +24,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -31,6 +32,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -104,32 +106,64 @@ public class ChatFragment extends Fragment {
         usersArrayList = new ArrayList<>();
 
 
+        DocumentReference reference = firestore.collection("Newchats").document(auth.getUid());
 
-        CollectionReference reference = firestore.collection("users");
+        if(reference.getId() == null){
+            View v = inflater.inflate(R.layout.empty_chat_layout, container, false);
+            exploreBtn = (TextView) v.findViewById(R.id.explore_ads_button);
+            exploreBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(getActivity(), DefaultPageActivity.class));
 
-        reference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-//                    if(documentSnapshot.getId() != auth.getUid()) {
-                    Users users = documentSnapshot.toObject(Users.class);
-                    usersArrayList.add(users);
                 }
-                adapter.notifyDataSetChanged();
-            }
-        });
+            });
+
+            return v;
+        }
+        else {
+
+            reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        if (documentSnapshot.exists()) {
+                            CollectionReference ref = firestore.collection("Newchats").document(auth.getUid()).collection("messages sent to");
+
+                            ref.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                        Users users = new Users(documentSnapshot.getId(), documentSnapshot.getString("receiverName"), "generic@gmail.com", documentSnapshot.getString("imageURI"), "7359102080");
+                                        Log.d("onSuccess : ", users.userName);
+                                        usersArrayList.add(users);
+                                    }
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                        } else {
+//                            Toast.makeText(getContext(), "list is empty", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), reference.getId(), Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+
+                }
+            });
 
 
-        View view = inflater.inflate(R.layout.fragment_chat, container, false);
-        ChatList = view.findViewById(R.id.ChatList);
-        ChatList.setHasFixedSize(true);
-        ChatList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+            View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        adapter = new ChatListAdapter(usersArrayList, this);
-        ChatList.setAdapter(adapter);
+            ChatList = view.findViewById(R.id.ChatList);
+            ChatList.setHasFixedSize(true);
+            ChatList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
-        return view;
+            adapter = new ChatListAdapter(usersArrayList, this);
+            ChatList.setAdapter(adapter);
 
+            return view;
+        }
 
 
 //        int flag = 0;
@@ -144,7 +178,7 @@ public class ChatFragment extends Fragment {
 ////            names.add("1En97XiEz8g1lfwpm1KWKs0SVtj2", "Elon Musk", "anuragpatil134@gmail.com", "https://firebasestorage.googleapis.com/v0/b/mini-project--ii.appspot.com/o/displaypicture.png?alt=media&token=c371684a-8c1b-4988-b2e7-251cac680fc5");
 //            ChatList.setAdapter(new ChatListAdapter(names, ChatFragment.this));
 //
-//            return view;
+//            return v;
 //        }
 //        else{
 //            View v = inflater.inflate(R.layout.empty_chat_layout, container, false);

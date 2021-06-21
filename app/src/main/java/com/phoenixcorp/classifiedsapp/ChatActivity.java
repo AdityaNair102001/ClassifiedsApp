@@ -66,36 +66,39 @@ public class ChatActivity extends AppCompatActivity {
         receiverName = getIntent().getStringExtra("name");
         receiverUID = getIntent().getStringExtra("UID");
 
-//        profileImg = findViewById(R.id.profile_image);
+        profileImg = findViewById(R.id.profile_image);
 
-//        Picasso.get().load(receiverImage).into(profileImg);
-//        receivername = findViewById(R.id.receiverName);
-//        receivername.setText("" + receiverName);
-//
+        Picasso.get().load(receiverImage).into(profileImg);
+        receivername = findViewById(R.id.receiverName);
+        receivername.setText("" + receiverName);
+
         sendBtn = findViewById(R.id.sendBtn);
         chatMsg = findViewById(R.id.chatMessage);
 
         senderUID = firebaseAuth.getCurrentUser().getUid();
-//
-//        senderRoom = senderUID + receiverUID;
-//        receiverRoom = receiverUID + senderUID;
-//
-//        messageAdapter = findViewById(R.id.messageAdapter);
-//        messagesArrayList = new ArrayList<Messages>();
-//
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        linearLayoutManager.setStackFromEnd(true);
-//        adapter = new MessageAdapter(ChatActivity.this, messagesArrayList);
-//        messageAdapter.setLayoutManager(linearLayoutManager);
-//
-//        messageAdapter.setAdapter(adapter);
+
+        senderRoom = senderUID + receiverUID;
+        receiverRoom = receiverUID + senderUID;
+
+        messageAdapter = findViewById(R.id.messageAdapter);
+        messagesArrayList = new ArrayList<Messages>();
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setStackFromEnd(true);
+        adapter = new MessageAdapter(ChatActivity.this, messagesArrayList);
+        messageAdapter.setLayoutManager(linearLayoutManager);
+
+        messageAdapter.setAdapter(adapter);
 
         DocumentReference userReference = firestore.collection("users").document(firebaseAuth.getUid());
-        CollectionReference chatReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages");
+        CollectionReference chatReference = firestore.collection("Newchats").document(firebaseAuth.getUid()).collection("messages sent to");
 
 //        chatReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
 //            @Override
 //            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+//                    documentSnapshot.getString()
+//                }
 //                messagesArrayList.clear();
 //
 //            }
@@ -119,21 +122,23 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 chatMsg.setText("");
                 Date date = new Date();
-                Messages m = new Messages(chat, senderUID, date.getTime());
-                firestore.collection("chats").document(receiverUID).set(m);
+                Messages m = new Messages(receiverName, receiverImage, chat, senderUID, date.getTime());
+                firestore.collection("Newchats").document(senderUID).set(m);
+                firestore.collection("Newchats").document(senderUID).collection("messages sent to").document(receiverUID).set(m);
+
 
                 firestore.
-                        collection("chats").
+                        collection("Newchats").
                         document(senderUID).
-                        collection("messages").
+                        collection("messages sent to").document(receiverUID).collection("messages").
                         add(m).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
-                        if(task.isSuccessful()) {
-                            Toast.makeText(ChatActivity.this, "msg Sent", Toast.LENGTH_SHORT).show();
-                        }
+                        if(task.isSuccessful())
+                            Toast.makeText(ChatActivity.this, "Message sent", Toast.LENGTH_SHORT).show();
                         else
-                            Toast.makeText(ChatActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChatActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
+
                     }
                 });
 

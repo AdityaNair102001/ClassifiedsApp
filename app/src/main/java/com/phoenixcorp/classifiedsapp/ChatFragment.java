@@ -108,62 +108,104 @@ public class ChatFragment extends Fragment {
 
         DocumentReference reference = firestore.collection("Newchats").document(auth.getUid());
 
-        if(reference.getId() == null){
-            View v = inflater.inflate(R.layout.empty_chat_layout, container, false);
-            exploreBtn = (TextView) v.findViewById(R.id.explore_ads_button);
-            exploreBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(getActivity(), DefaultPageActivity.class));
+//        if(reference.collection("messages sent to").equals(null)){
+//            View v = inflater.inflate(R.layout.empty_chat_layout, container, false);
+//            exploreBtn = (TextView) v.findViewById(R.id.explore_ads_button);
+//            exploreBtn.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    startActivity(new Intent(getActivity(), DefaultPageActivity.class));
+//                }
+//            });
+//
+//            return v;
+//        }
+//        else {
 
-                }
-            });
 
-            return v;
-        }
-        else {
 
-            reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot documentSnapshot = task.getResult();
-                        if (documentSnapshot.exists()) {
-                            CollectionReference ref = firestore.collection("Newchats").document(auth.getUid()).collection("messages sent to");
+        reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if (documentSnapshot.exists()) {
+                        CollectionReference ref = firestore.collection("Newchats").document(auth.getUid()).collection("messages sent to");
 
-                            ref.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        ref.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                if(!queryDocumentSnapshots.isEmpty()) {
                                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                                         Users users = new Users(documentSnapshot.getId(), documentSnapshot.getString("receiverName"), "generic@gmail.com", documentSnapshot.getString("imageURI"), "7359102080");
                                         Log.d("onSuccess : ", users.userName);
                                         usersArrayList.add(users);
                                     }
-                                    adapter.notifyDataSetChanged();
+                                    firestore.collection("Newchats").document(auth.getUid()).collection("messages received from").
+                                            get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            for(QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots){
+                                                Users users = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("receiverName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080");
+                                                if(usersArrayList.contains(users) == true) {
+                                                    usersArrayList.add(users);
+                                                }
+                                            }
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
                                 }
-                            });
-                        } else {
-//                            Toast.makeText(getContext(), "list is empty", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(getContext(), reference.getId(), Toast.LENGTH_SHORT).show();
+                                else{
+                                    firestore.collection("Newchats").
+                                            document(auth.getUid()).
+                                            collection("messages received from").
+                                            get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            for(QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots){
+                                                Users users = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("receiverName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080");
+                                                    usersArrayList.add(users);
+                                            }
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getContext(), "list is empty", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getContext(), reference.collection("messages sent to").toString(), Toast.LENGTH_SHORT).show();
 
-                        }
                     }
-
                 }
-            });
+
+            }
+        });
+
+//        firestore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                for(QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots){
+//                    Users users = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("username"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080");
+////                    if(!usersArrayList.contains(users))
+//                        usersArrayList.add(users);
+//                }
+//                adapter.notifyDataSetChanged();
+//            }
+//        });
 
 
-            View view = inflater.inflate(R.layout.fragment_chat, container, false);
+        View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-            ChatList = view.findViewById(R.id.ChatList);
-            ChatList.setHasFixedSize(true);
-            ChatList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        ChatList = view.findViewById(R.id.ChatList);
+        ChatList.setHasFixedSize(true);
+        ChatList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
-            adapter = new ChatListAdapter(usersArrayList, this);
-            ChatList.setAdapter(adapter);
+        adapter = new ChatListAdapter(usersArrayList, this);
+        ChatList.setAdapter(adapter);
 
-            return view;
-        }
+        return view;
+
 
 
 //        int flag = 0;

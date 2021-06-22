@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -93,23 +94,25 @@ public class ChatActivity extends AppCompatActivity {
         DocumentReference userReference = firestore.collection("users").document(firebaseAuth.getUid());
         CollectionReference chatReference = firestore.collection("Newchats").document(firebaseAuth.getUid()).collection("messages sent to");
 
-//        chatReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//            @Override
-//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
-//                    documentSnapshot.getString()
-//                }
-//                messagesArrayList.clear();
-//
-//            }
-//        });
-//
-//        userReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//            @Override
-//            public void onSuccess(DocumentSnapshot documentSnapshot) {
-//
-//            }
-//        });
+        chatReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                    Messages message = documentSnapshot.toObject(Messages.class);
+                    messagesArrayList.add(message);
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        userReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                senderImg = documentSnapshot.getString("imageURI");
+                receiverImg = receiverImage;
+
+            }
+        });
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,8 +137,27 @@ public class ChatActivity extends AppCompatActivity {
                         add(m).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
-                        if(task.isSuccessful())
+                        if(task.isSuccessful()) {
                             Toast.makeText(ChatActivity.this, "Message sent", Toast.LENGTH_SHORT).show();
+                            firestore.collection("Newchats").document(receiverUID).set(m);
+                            firestore.collection("Newchats").document(receiverUID).collection("messages received from").document(senderUID).set(m);
+
+                            firestore.collection("Newchats").
+                                    document(receiverUID).
+                                    collection("messages received from").document(senderUID).collection("messages").
+                                    add(m).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentReference> task) {
+                                    if(task.isSuccessful()){
+                                        Toast.makeText(ChatActivity.this, "Message received", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else{
+                                        Toast.makeText(ChatActivity.this, "Error", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                }
+                            });
+                        }
                         else
                             Toast.makeText(ChatActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
 

@@ -56,8 +56,6 @@ public class NewPostActivity extends AppCompatActivity {
     ArrayList<Uri> images;
     SliderView sliderView;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,8 +64,6 @@ public class NewPostActivity extends AppCompatActivity {
          sliderView = findViewById(R.id.imageSlider);
 
         images = new ArrayList<>();
-
-
 
         Button selectImages=findViewById(R.id.selectImages);
 
@@ -146,7 +142,8 @@ public class NewPostActivity extends AppCompatActivity {
                 }
                 else{
                     uploadImages(db,pd,documentID);
-                    uploadData(productNameVal,productDescriptionVal,priceVal,locationVal,db,pd,documentID);
+                    uploadData(productNameVal,productDescriptionVal,priceVal,locationVal,db,pd,documentID,uid);
+
                 }
             }
 
@@ -159,7 +156,7 @@ public class NewPostActivity extends AppCompatActivity {
 
     private void uploadImages(FirebaseFirestore db, ProgressDialog pd,String documentID) {
 
-        pd.setMessage("Uploading");
+        pd.setMessage("Uploading Images");
         pd.show();
 
 
@@ -178,6 +175,7 @@ public class NewPostActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri) {
                             String url= String.valueOf(uri);
+
                             Log.d("URL", "onSuccess: "+url);
 
 
@@ -188,13 +186,16 @@ public class NewPostActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentReference> task) {
                                     if(task.isSuccessful()){
+                                        pd.dismiss();
                                         Toast.makeText(NewPostActivity.this,"Images uploaded",Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(NewPostActivity.this, DefaultPageActivity.class);
+                                        startActivity(intent);
+
                                     }else{
                                         Toast.makeText(NewPostActivity.this,"Couldn't post."+ Objects.requireNonNull(task.getException()).getMessage(),Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
-
 
 
                         }
@@ -207,7 +208,7 @@ public class NewPostActivity extends AppCompatActivity {
 
     }
 
-    void uploadData(String productNameVal,String productDescriptionVal, String priceVal,String locationVal,FirebaseFirestore db,ProgressDialog pd,String documentID){
+    void uploadData(String productNameVal,String productDescriptionVal, String priceVal,String locationVal,FirebaseFirestore db,ProgressDialog pd,String documentID,String uid){
 
 
         Map<String,Object> postData=new HashMap<>();
@@ -215,14 +216,15 @@ public class NewPostActivity extends AppCompatActivity {
         postData.put("productDescription",productDescriptionVal);
         postData.put("price",priceVal);
         postData.put("location",locationVal);
+        postData.put("UID",uid);
 
 
         db.collection("posts").document(documentID).set(postData).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(NewPostActivity.this,"Posted",Toast.LENGTH_LONG).show();
-                    pd.dismiss();
+                    Toast.makeText(NewPostActivity.this,"Data Posted",Toast.LENGTH_LONG).show();
+
                 }else{
                     Toast.makeText(NewPostActivity.this,"Couldn't post."+ Objects.requireNonNull(task.getException()).getMessage(),Toast.LENGTH_LONG).show();
                 }
@@ -254,7 +256,6 @@ public class NewPostActivity extends AppCompatActivity {
                 images.add(imageURI);
                 adapterHandler(images);
             }
-
 
         }
     }

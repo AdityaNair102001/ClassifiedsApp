@@ -116,7 +116,7 @@
                 android:fontFamily="sans-serif-condensed"/>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card"
+                android:id="@+id/productCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"

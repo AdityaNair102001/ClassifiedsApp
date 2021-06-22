@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".VerifyPhoneNumber">
+
+
+    <Button
+        android:id="@+id/ResendBtn"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:text="Didn't Recieve? Resend OTP"
+        android:textColor="@color/colorPrimaryVariant"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Verification_Code" />
+
+    <TextView
+        android:id="@+id/VerifyTitle"
+        android:layout_width="366dp"
+        android:layout_height="68dp"
+        android:layout_marginTop="56dp"
+        android:fontFamily="@font/greatvibes"
+        android:includeFontPadding="false"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:text="Phone Verification"
+        android:textColor="@color/black"
+        android:textSize="55sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/Verify_subTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/lateef"
+        android:text="An OTP Will be Sent to Your \n   Registered Phone Number"
+        android:textColor="@color/colorPrimaryVariant"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/VerifyTitle" />
+
+    <com.chaos.view.PinView
+        android:id="@+id/Verification_Code"
+        style="@style/PinWidget.PinView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="124dp"
+        app:itemCount="6"
+        android:inputType="number"
+        android:cursorVisible="true"
+        app:cursorColor="@color/colorPrimary"
+        app:cursorWidth="2dp"
+        app:hideLineWhenFilled="true"
+        app:itemRadius="5dp"
+        android:textColor="@color/grey"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:lineColor="@color/grey"
+        app:lineWidth="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Verify_subTitle" />
+
+<!--    <EditText-->
+<!--        android:id="@+id/Verification_Code"-->
+<!--        android:layout_width="372dp"-->
+<!--        android:background="@drawable/backwithborder"-->
+<!--        android:layout_height="42dp"-->
+<!--        android:inputType="number"-->
+<!--        android:maxLength="6"-->
+<!--        android:textStyle="bold"-->
+<!--        android:cursorVisible="true"-->
+<!--        android:textCursorDrawable="@color/black"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:layout_marginTop="173dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/Verify_subTitle" />-->
+
+    <Button
+        android:id="@+id/VerifyBtn"
+        android:layout_width="150dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="34dp"
+        android:text="verify"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:backgroundTint="@color/colorPrimary"
+        app:cornerRadius="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ResendBtn"
+        app:strokeColor="@color/black"
+        app:strokeWidth="0.62dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

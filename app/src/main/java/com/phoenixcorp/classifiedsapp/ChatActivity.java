@@ -14,13 +14,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -44,7 +52,7 @@ public class ChatActivity extends AppCompatActivity {
 
     ArrayList<Messages> messagesArrayList;
 
-    ChatListAdapter adapter;
+    MessageAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,34 +61,55 @@ public class ChatActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
-//
-//        receiverImage = getIntent().getStringExtra("ReceiverImage");
-//        receiverName = getIntent().getStringExtra("name");
-//        receiverUID = getIntent().getStringExtra("UID");
-//
+
+        receiverImage = getIntent().getStringExtra("ReceiverImage");
+        receiverName = getIntent().getStringExtra("name");
+        receiverUID = getIntent().getStringExtra("UID");
+
         profileImg = findViewById(R.id.profile_image);
-//
-//        Picasso.get().load(receiverImage).into(profileImg);
-//        receivername = findViewById(R.id.receiverName);
-//        receivername.setText("" + receiverName);
-//
+
+        Picasso.get().load(receiverImage).into(profileImg);
+        receivername = findViewById(R.id.receiverName);
+        receivername.setText("" + receiverName);
+
         sendBtn = findViewById(R.id.sendBtn);
         chatMsg = findViewById(R.id.chatMessage);
-//
-//        senderUID = firebaseAuth.getUid();
-//        senderRoom = senderUID + receiverUID;
-//        receiverRoom = receiverUID + senderUID;
-//
-//        messageAdapter = findViewById(R.id.messageAdapter);
-//        messagesArrayList = new ArrayList<Messages>();
-//
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        linearLayoutManager.setStackFromEnd(true);
-////        adapter = new ChatListAdapter(ChatActivity.this, messagesArrayList);
-//        messageAdapter.setLayoutManager(linearLayoutManager);
-//
-//        messageAdapter.setAdapter(adapter);
 
+        senderUID = firebaseAuth.getCurrentUser().getUid();
+
+        senderRoom = senderUID + receiverUID;
+        receiverRoom = receiverUID + senderUID;
+
+        messageAdapter = findViewById(R.id.messageAdapter);
+        messagesArrayList = new ArrayList<Messages>();
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setStackFromEnd(true);
+        adapter = new MessageAdapter(ChatActivity.this, messagesArrayList);
+        messageAdapter.setLayoutManager(linearLayoutManager);
+
+        messageAdapter.setAdapter(adapter);
+
+        DocumentReference userReference = firestore.collection("users").document(firebaseAuth.getUid());
+        CollectionReference chatReference = firestore.collection("Newchats").document(firebaseAuth.getUid()).collection("messages sent to");
+
+//        chatReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+//                    documentSnapshot.getString()
+//                }
+//                messagesArrayList.clear();
+//
+//            }
+//        });
+//
+//        userReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//            @Override
+//            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//
+//            }
+//        });
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,14 +122,23 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 chatMsg.setText("");
                 Date date = new Date();
-                Messages m = new Messages(chat, senderUID, date.getTime());
+                Messages m = new Messages(receiverName, receiverImage, chat, senderUID, date.getTime());
+                firestore.collection("Newchats").document(senderUID).set(m);
+                firestore.collection("Newchats").document(senderUID).collection("messages sent to").document(receiverUID).set(m);
 
 
                 firestore.
-                        collection("chats").
-                        document(senderUID).set(m).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        collection("Newchats").
+                        document(senderUID).
+                        collection("messages sent to").document(receiverUID).collection("messages").
+                        add(m).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if(task.isSuccessful())
+                            Toast.makeText(ChatActivity.this, "Message sent", Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(ChatActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
+
                     }
                 });
 

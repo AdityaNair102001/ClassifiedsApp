@@ -4,15 +4,17 @@ public class Users {
     String Uid;
     String userName;
     String userEmail;
+    String phoneNo;
     String imageURI;
 
     public Users(){}
 
-    public Users(String uid, String userName, String userEmail, String imageURI) {
+    public Users(String uid, String userName, String userEmail,String imageURI, String phoneNo) {
         Uid = uid;
         this.userName = userName;
         this.userEmail = userEmail;
         this.imageURI = imageURI;
+        this.phoneNo = phoneNo;
     }
 
     public String getUid() {
@@ -38,6 +40,10 @@ public class Users {
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
+
+    public String getPhoneNo() { return phoneNo;  }
+
+    public void setPhoneNo(String phoneNo) { this.phoneNo = phoneNo;  }
 
     public String getImageURI() {
         return imageURI;

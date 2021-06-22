@@ -2,19 +2,38 @@ package com.phoenixcorp.classifiedsapp;
 
 public class Messages {
 
+    String receiverName;
     String chat;
     String senderID;
+    String imageURI;
     long timeStamp;
 
     public Messages(){}
 
-    public Messages(String chat, String senderID, long timeStamp) {
-        chat.trim();
+    public Messages(String receiverName, String imageURI, String chat, String senderID, long timeStamp) {
+        this.receiverName = receiverName;
         this.chat = chat;
         this.senderID = senderID;
         this.timeStamp = timeStamp;
+        this.imageURI = imageURI;
+
     }
 
+    public String getImageURI() {
+        return imageURI;
+    }
+
+    public void setImageURI(String imageURI) {
+        this.imageURI = imageURI;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+    }
 
     public String getChat() {
         return chat;

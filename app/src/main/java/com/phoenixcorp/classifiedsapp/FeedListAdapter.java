@@ -2,6 +2,7 @@ package com.phoenixcorp.classifiedsapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,19 +23,23 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
     ArrayList<String> products;
     ArrayList<String> prices;
     ArrayList<String> UIDs;
+    ArrayList<String> DocumentID;
 
     HashMap<String,String> names;
     HashMap<String,String> imageURLs;
 
     Fragment homeFragment;
 
-    public FeedListAdapter( ArrayList<String>products,ArrayList<String> prices, HashMap<String,String> imageURLs, ArrayList<String> UIDs,  HashMap<String,String> names,HomeFragment homeFragment) {
+
+    public FeedListAdapter(ArrayList<String>products, ArrayList<String> prices, HashMap<String,String> imageURLs, ArrayList<String> UIDs, HashMap<String,String> names, HomeFragment homeFragment, ArrayList<String> DocumentID) {
         this.products=products;
         this.prices=prices;
         this.imageURLs=imageURLs;
         this.names=names;
         this.UIDs=UIDs;
         this.homeFragment=homeFragment;
+        this.DocumentID = DocumentID;
+
     }
 
     @NonNull
@@ -51,12 +56,18 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
         String productName=products.get(position);
         String price= "\u20B9"+ prices.get(position);
         String url=imageURLs.get(productName);
+        String docID = DocumentID.get(position);
+        String sellerUID = UIDs.get(position);
         holder.productName.setText(productName);
         holder.price.setText(price);
         Picasso.get().load(url).into(holder.feedImage);
 
         holder.productCard.setOnClickListener(v -> {
             Intent intent = new Intent(homeFragment.getActivity(), ProductDescription.class);
+            intent.putExtra("Product Name", productName);
+            intent.putExtra("Product Price", price);
+            intent.putExtra("Seller UID", sellerUID);
+            intent.putExtra("Document ID", docID);
             homeFragment.startActivity(intent);
         });
 

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,14 +25,15 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
     ArrayList<String> prices;
     ArrayList<String> UIDs;
     ArrayList<String> DocumentID;
+    ArrayList<String> location;
 
     HashMap<String,String> names;
     HashMap<String,String> imageURLs;
 
     Fragment homeFragment;
 
+    public FeedListAdapter(ArrayList<String>products, ArrayList<String> prices, HashMap<String,String> imageURLs, ArrayList<String> UIDs, ArrayList<String> location , HashMap<String,String> names, HomeFragment homeFragment, ArrayList<String> DocumentID) {
 
-    public FeedListAdapter(ArrayList<String>products, ArrayList<String> prices, HashMap<String,String> imageURLs, ArrayList<String> UIDs, HashMap<String,String> names, HomeFragment homeFragment, ArrayList<String> DocumentID) {
         this.products=products;
         this.prices=prices;
         this.imageURLs=imageURLs;
@@ -39,7 +41,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
         this.UIDs=UIDs;
         this.homeFragment=homeFragment;
         this.DocumentID = DocumentID;
-
+        this.location=location;
     }
 
     @NonNull
@@ -59,6 +61,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
         String docID = DocumentID.get(position);
         String sellerUID = UIDs.get(position);
         holder.productName.setText(productName);
+        holder.location.setText(location.get(position));
         holder.price.setText(price);
         Picasso.get().load(url).into(holder.feedImage);
 
@@ -83,8 +86,10 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
 
         TextView productName;
         TextView price;
+        TextView location;
         ImageView feedImage;
         CardView productCard;
+
 
         public FeedListViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -92,6 +97,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
             price=itemView.findViewById(R.id.priceTextView);
             feedImage=itemView.findViewById(R.id.feedImage);
             productCard= itemView.findViewById(R.id.productCard);
+            location=itemView.findViewById(R.id.locationTextView);
 
         }
     }

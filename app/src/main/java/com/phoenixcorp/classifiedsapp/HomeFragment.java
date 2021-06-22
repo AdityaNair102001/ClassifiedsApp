@@ -91,6 +91,8 @@ public class HomeFragment extends Fragment {
         ArrayList<String> priceFromDB=new ArrayList<>();
         ArrayList<String> UIDFromDB=new ArrayList<>();
         ArrayList<String> documentID = new ArrayList<>();
+        ArrayList<String> location=new ArrayList<>();
+
         HashMap<String,String> names=new HashMap<>();
 
         HashMap<String,String> imageURLFromDB=new HashMap<>();
@@ -108,6 +110,7 @@ public class HomeFragment extends Fragment {
                         priceFromDB.add(document.getString("price"));
                         UIDFromDB.add(document.getString("UID"));
                         documentID.add(document.getId());
+                        location.add(document.getString("location"));
 
                         db.collection("posts/"+document.getId()+"/urls").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -122,7 +125,7 @@ public class HomeFragment extends Fragment {
                                     imageURLFromDB.put(document.getString("productName"),documentList.get(i).getString("url"));
                                 }
 
-                                adapterHandler(productsFromDB,priceFromDB,imageURLFromDB,UIDFromDB,names,feed, documentID);
+                                adapterHandler(productsFromDB,priceFromDB,imageURLFromDB,UIDFromDB,location,names,feed, documentID);
                                 feed.setHasFixedSize(true);
 
                             }
@@ -174,8 +177,8 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private void adapterHandler(ArrayList<String> products,ArrayList<String> prices, HashMap<String,String> imagesURLs, ArrayList<String> UIDs,HashMap<String,String> names,RecyclerView feed, ArrayList<String> documentID) {
-        FeedListAdapter adapter=new FeedListAdapter(products,prices,imagesURLs,UIDs,names,this, documentID);
+    private void adapterHandler(ArrayList<String> products,ArrayList<String> prices, HashMap<String,String> imagesURLs, ArrayList<String> UIDs,ArrayList<String> location,HashMap<String,String> names,RecyclerView feed, ArrayList<String> documentID) {
+        FeedListAdapter adapter=new FeedListAdapter(products,prices,imagesURLs,UIDs,location,names,this, documentID);
         if(imagesURLs.size()!=products.size() && names.size()!=products.size()){
             return;
         }else{

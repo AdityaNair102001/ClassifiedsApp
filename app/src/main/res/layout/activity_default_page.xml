@@ -12,28 +12,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_anchor="@id/AppBarLayout"
-        app:layout_anchorGravity="top"
+        app:layout_anchorGravity="bottom"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/AppBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+<!--    <com.google.android.material.appbar.AppBarLayout-->
+<!--        android:id="@+id/AppBarLayout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:fitsSystemWindows="true">-->
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topAppBar"
-            style="@style/Widget.MaterialComponents.Toolbar.Primary"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="@string/app_name"
-            app:titleMarginStart="130dp"
-            app:titleTextAppearance="@style/TextAppearance.MyApp.Headline1"
-            app:titleTextColor="@color/black" />
+<!--        <com.google.android.material.appbar.MaterialToolbar-->
+<!--            android:id="@+id/topAppBar"-->
+<!--            style="@style/Widget.MaterialComponents.Toolbar.Primary"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="?attr/actionBarSize"-->
+<!--            app:title="@string/app_name"-->
+<!--            app:titleMarginStart="130dp"-->
+<!--            app:titleTextAppearance="@style/TextAppearance.MyApp.Headline1"-->
+<!--            app:titleTextColor="@color/black" />-->
 
-    </com.google.android.material.appbar.AppBarLayout>
+<!--    </com.google.android.material.appbar.AppBarLayout>-->
+
+    <include layout="@layout/app_bar_layout"
+        android:id="@+id/AppBarLayout">
+
+    </include>
 
 
 

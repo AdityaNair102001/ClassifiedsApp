@@ -28,8 +28,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class SignupActivity extends AppCompatActivity {
     public static final String TAG = "TAG";
@@ -38,6 +41,13 @@ public class SignupActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
+    String emailPattern = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    String passwordVer = "^" +
+            "(?=.*[a-zA-Z])" +       // any letter
+            "(?=.*[@#$%^&+=])" +     // at least 1 special character
+            "(?=\\S+$)" +            // no white spaces
+            ".{6,}" +                // at least 4 characters
+            "$";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,76 +65,65 @@ public class SignupActivity extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
-        //If user has already logged in
-        if(fAuth.getCurrentUser() != null){
-            startActivity(new Intent(getApplicationContext(), DefaultPageActivity.class));
-            finish();
-        }
-
         mSignupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 final String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
                 final String username = mUsername.getText().toString();
-                final String phone    = mPhone.getText().toString();
+                final String phone    = "+91" + mPhone.getText().toString().trim();
+                final String default_URI = "https://firebasestorage.googleapis.com/v0/b/fir-project-2b9f4.appspot.com/o/displaypicture.png?alt=media&token=007775cd-0561-46a9-b812-e3b8d0573346";
 
-                if(TextUtils.isEmpty(email)){
-                    mEmail.setError("Email is Required.");
+                if(username.isEmpty()){
+                    mUsername.setError("Field Cannot be Empty.");
+                    return;
+                }
+                if(email.isEmpty()){
+                    mEmail.setError("Field Cannot be Empty.");
+                    return;
+                }
+                if(password.isEmpty()){
+                    mPassword.setError("Field Cannot be Empty.");
+                    return;
+                }
+                if(phone.isEmpty()){
+                    mPhone.setError("Field Cannot be Empty.");
+                    return;
+                }
+                if(phone.length() < 10){
+                    mPhone.setError("Enter a 10-Digit Phone Number.");
+                    return;
+                }
+                if(!email.matches(emailPattern)){
+                    mEmail.setError("Invalid Email Address.");
+                    return;
+                }
+                if(!password.matches(passwordVer)){
+                    mPassword.setError("Password is Too Weak : \nMust Have 6 Characters\n1 Special Character\nNo Blank Spaces");
                     return;
                 }
 
-                if(TextUtils.isEmpty(password)){
-                    mPassword.setError("Password is Required.");
-                    return;
-                }
-
-                if(password.length() < 6){
-                    mPassword.setError("Password must me at-least 6 Character long.");
-                    return;
-                }
-
-                //Register User in the FireBase Database
-                fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                //Register User in the FireBase Database By their Email & Password
+                fAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            FirebaseUser fuser = fAuth.getCurrentUser();
-                            fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Toast.makeText(SignupActivity.this, "Verification Email Has been Sent.", Toast.LENGTH_SHORT).show();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, "onFailure: Email not sent " + e.getMessage());
-                                }
-                            });
+                    public void onSuccess(AuthResult authResult) {
 
-                            Toast.makeText(SignupActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
-                            userID = fAuth.getCurrentUser().getUid();
-                            DocumentReference documentReference = fStore.collection("users").document(userID);
-                            Map<String,Object> user = new HashMap<>();
-                            user.put("username",username);
-                            user.put("email",email);
-                            user.put("phone",phone);
-                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d(TAG, "onSuccess: user Profile is created for "+ userID);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, "onFailure: " + e.toString());
-                                }
-                            });
-                            startActivity(new Intent(getApplicationContext(), DefaultPageActivity.class));
-                        }
-                        else{
-                            Toast.makeText(SignupActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                        Toast.makeText(SignupActivity.this, "User Created By Their Email.", Toast.LENGTH_SHORT).show();
+
+//                      Move to Verify Phone Number And store user details after the Phone Verification
+                        Intent intent = new Intent(SignupActivity.this, VerifyPhoneNumber.class);
+                        intent.putExtra("Email", email);
+                        intent.putExtra("Name", username);
+                        intent.putExtra("ImgURI", default_URI);
+                        intent.putExtra("phoneNo", phone);
+                        startActivity(intent);
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception e) {
+                        Toast.makeText(SignupActivity.this, "Error! Check Your Internet Connection.", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

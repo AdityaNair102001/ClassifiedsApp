@@ -31,7 +31,7 @@
                 app:layout_constraintTop_toTopOf="@id/constraintContainer">
 
                 <com.smarteist.autoimageslider.SliderView
-                    android:id="@+id/imageSlider"
+                    android:id="@+id/desc_product_imageSlider"
                     android:layout_width="match_parent"
                     android:layout_height="350dp"
                     android:background="@color/white"

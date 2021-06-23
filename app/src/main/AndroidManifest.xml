@@ -14,9 +14,14 @@
         android:theme="@style/Theme.ClassifiedsApp">
         <activity
             android:name=".ProductDescription"
-            android:parentActivityName=".DefaultPageActivity"></activity>
+            android:parentActivityName=".DefaultPageActivity">
+
+        </activity>
         <activity
-            android:name=".VerifyPhoneNumber"></activity>
+            android:name=".VerifyPhoneNumber"
+            android:theme="@style/Theme.ClassifiedsApp.NoActionBar">
+
+        </activity>
         <activity
             android:name=".ChatActivity"
             android:theme="@style/Theme.ClassifiedsApp.NoActionBar" />
@@ -33,7 +38,8 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.ClassifiedsApp.NoActionBar" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/Theme.ClassifiedsApp.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

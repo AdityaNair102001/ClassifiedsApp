@@ -4,6 +4,7 @@
     android:id="@+id/feed"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="60dp"
     android:layout_marginBottom="?attr/actionBarSize"
     android:background="@color/white"
     tools:context=".HomeFragment" />

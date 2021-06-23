@@ -8,24 +8,11 @@
     tools:context=".SignupActivity">
 
 
-    <Button
-        android:id="@+id/LogIn"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="96dp"
-        android:text="Already have an account?"
-        android:textColor="@color/colorPrimaryVariant"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/SignUp" />
-
     <TextView
         android:id="@+id/Signup_text"
         android:layout_width="179dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="24dp"
+        android:layout_height="66dp"
+        android:layout_marginTop="50dp"
         android:fontFamily="@font/lateef"
         android:text="SIGN UP"
         android:textColor="@color/black"
@@ -42,23 +29,23 @@
         android:layout_marginTop="32dp"
         android:hint="@string/email"
         android:textColorHint="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Username_S"
         app:boxCornerRadiusBottomEnd="30dp"
         app:boxCornerRadiusBottomStart="30dp"
         app:boxCornerRadiusTopEnd="30dp"
         app:boxCornerRadiusTopStart="30dp"
+        app:boxStrokeColor="@color/colorPrimary"
         app:hintTextColor="#E8768D"
-        app:boxStrokeColor="@color/colorPrimary">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Username_S">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/Email1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
             android:cursorVisible="true"
-            android:textColor="@color/design_default_color_on_secondary"/>
+            android:inputType="textEmailAddress"
+            android:textColor="@color/design_default_color_on_secondary" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -68,7 +55,7 @@
         android:layout_width="251dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:hint="@string/username"
+        android:hint="Name"
         android:textColorHint="@color/black"
         app:boxCornerRadiusBottomEnd="30dp"
         app:boxCornerRadiusBottomStart="30dp"
@@ -84,9 +71,9 @@
             android:id="@+id/Username1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
             android:cursorVisible="true"
-            android:textColor="@color/design_default_color_on_secondary"/>
+            android:inputType="text"
+            android:textColor="@color/design_default_color_on_secondary" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -112,17 +99,18 @@
             android:id="@+id/Password1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:cursorVisible="true"
-            android:textColor="@color/design_default_color_on_secondary"/>
+            android:inputType="textPassword"
+            android:maxLength="16"
+            android:textColor="@color/design_default_color_on_secondary" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/Phone_S"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="251dp"
-        android:layout_height="wrap_content"
+        android:layout_width="249dp"
+        android:layout_height="64dp"
         android:layout_marginTop="32dp"
         android:hint="@string/phone"
         android:textColorHint="@color/black"
@@ -140,9 +128,11 @@
             android:id="@+id/Phone1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="phone"
             android:cursorVisible="true"
-            android:textColor="@color/design_default_color_on_secondary"/>
+            android:inputType="phone"
+            android:maxLength="10"
+            android:textColor="@color/design_default_color_on_secondary" />
+
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -160,8 +150,25 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Phone_S"
-        app:layout_constraintVertical_bias="0.204"
+        app:layout_constraintVertical_bias="0.328"
         app:strokeColor="@color/black"
         app:strokeWidth="0.62dp" />
+
+    <Button
+        android:id="@+id/LogIn"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginEnd="101dp"
+        android:layout_marginBottom="72dp"
+        android:text="Already have an account?"
+        android:textColor="@color/colorPrimaryVariant"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

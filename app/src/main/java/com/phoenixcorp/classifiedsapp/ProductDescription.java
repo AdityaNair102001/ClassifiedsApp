@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,7 +34,7 @@ public class ProductDescription extends AppCompatActivity {
     TextView productNameView, productPriceView, productDescriptionView, productLocationView, sellerNameView;
     CircleImageView sellerImageView;
 
-    String productname, productprice, productdescription, productlocatoin, sellername, sellerUID, documentID;
+    String productname, productprice, productdescription, productlocation, sellername, sellerUID, documentID;
     String sellerURI;
 
     @Override
@@ -60,26 +61,21 @@ public class ProductDescription extends AppCompatActivity {
         productprice = getIntent().getStringExtra("Product Price");
         sellerUID = getIntent().getStringExtra("Seller UID");
         documentID = getIntent().getStringExtra("Document ID");
+        productlocation = getIntent().getStringExtra("Product Location");
 
         productNameView.setText(productname);
         productPriceView.setText(productprice);
-//        productLocationView.setText(productlocation);
+        productLocationView.setText(productlocation);
         sellerNameView.setText(sellername);
 
 
-//        firestore.collection("posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    for (QueryDocumentSnapshot document : task.getResult()) {
-//                        subDocs.add(document.getId());
-//                    }
-//                    Log.d("nuber of documents : ", Integer.toString(subDocs.size()));
-//                } else {
-//                    Log.d("abc", "abc");
-//                }
-//            }
-//        });
+        firestore.collection("posts").document(documentID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                productdescription = documentSnapshot.getString("productDescription");
+                productDescriptionView.setText(productdescription);
+            }
+        });
 
 
         firestore.collection("users").document(sellerUID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

@@ -58,6 +58,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
         String productName=products.get(position);
         String price= "\u20B9"+ prices.get(position);
         String url=imageURLs.get(productName);
+        String productLocation = location.get(position);
         String docID = DocumentID.get(position);
         String sellerUID = UIDs.get(position);
         holder.productName.setText(productName);
@@ -71,6 +72,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
             intent.putExtra("Product Price", price);
             intent.putExtra("Seller UID", sellerUID);
             intent.putExtra("Document ID", docID);
+            intent.putExtra("Product Location", productLocation);
             homeFragment.startActivity(intent);
         });
 

@@ -1,6 +1,5 @@
 package com.phoenixcorp.classifiedsapp;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +55,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
         holder.productName.setText(productName);
         holder.location.setText(location.get(position));
         holder.price.setText(price);
-        Picasso.get().load(url).into(holder.feedImage);
+        Picasso.get().load(url).placeholder(R.drawable.loader).into(holder.feedImage);
 
         holder.productCard.setOnClickListener(v -> {
             Intent intent = new Intent(homeFragment.getActivity(), ProductDescription.class);

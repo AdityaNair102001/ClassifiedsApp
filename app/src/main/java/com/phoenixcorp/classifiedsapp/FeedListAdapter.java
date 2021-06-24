@@ -2,6 +2,7 @@ package com.phoenixcorp.classifiedsapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -22,6 +24,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
     ArrayList<String> products;
     ArrayList<String> prices;
     ArrayList<String> UIDs;
+    ArrayList<String> DocumentID;
     ArrayList<String> location;
 
     HashMap<String,String> names;
@@ -29,13 +32,15 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
 
     Fragment homeFragment;
 
-    public FeedListAdapter( ArrayList<String>products,ArrayList<String> prices, HashMap<String,String> imageURLs, ArrayList<String> UIDs, ArrayList<String> location ,HashMap<String,String> names,HomeFragment homeFragment) {
+    public FeedListAdapter(ArrayList<String>products, ArrayList<String> prices, HashMap<String,String> imageURLs, ArrayList<String> UIDs, ArrayList<String> location , HashMap<String,String> names, HomeFragment homeFragment, ArrayList<String> DocumentID) {
+
         this.products=products;
         this.prices=prices;
         this.imageURLs=imageURLs;
         this.names=names;
         this.UIDs=UIDs;
         this.homeFragment=homeFragment;
+        this.DocumentID = DocumentID;
         this.location=location;
     }
 
@@ -53,6 +58,9 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
         String productName=products.get(position);
         String price= "\u20B9"+ prices.get(position);
         String url=imageURLs.get(productName);
+        String productLocation = location.get(position);
+        String docID = DocumentID.get(position);
+        String sellerUID = UIDs.get(position);
         holder.productName.setText(productName);
         holder.location.setText(location.get(position));
         holder.price.setText(price);
@@ -60,6 +68,11 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
 
         holder.productCard.setOnClickListener(v -> {
             Intent intent = new Intent(homeFragment.getActivity(), ProductDescription.class);
+            intent.putExtra("Product Name", productName);
+            intent.putExtra("Product Price", price);
+            intent.putExtra("Seller UID", sellerUID);
+            intent.putExtra("Document ID", docID);
+            intent.putExtra("Product Location", productLocation);
             homeFragment.startActivity(intent);
         });
 

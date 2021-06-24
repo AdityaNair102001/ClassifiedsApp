@@ -1,5 +1,6 @@
 package com.phoenixcorp.classifiedsapp;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,18 +8,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.smarteist.autoimageslider.SliderViewAdapter;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class ProductDescriptionSliderAdapter extends SliderViewAdapter<ProductDescriptionSliderAdapter.SliderAdapterVH> {
-    ArrayList<Uri> images;
+    ArrayList<String> images;
 
-    public ProductDescriptionSliderAdapter(ArrayList<Uri> images) {
+    public ProductDescriptionSliderAdapter(ArrayList<String> images) {
         this.images=images;
 
     }
 
-    public void renewItems(ArrayList<Uri> sliderItems) {
+    public void renewItems(ArrayList<String> sliderItems) {
         this.images = sliderItems;
         notifyDataSetChanged();
     }
@@ -28,7 +30,7 @@ public class ProductDescriptionSliderAdapter extends SliderViewAdapter<ProductDe
         notifyDataSetChanged();
     }
 
-    public void addItem(Uri sliderItem) {
+    public void addItem(String sliderItem) {
         this.images.add(sliderItem);
         notifyDataSetChanged();
     }
@@ -43,7 +45,8 @@ public class ProductDescriptionSliderAdapter extends SliderViewAdapter<ProductDe
 
     @Override
     public void onBindViewHolder(SliderAdapterVH viewHolder, int position) {
-        viewHolder.imageView.setImageURI(images.get(position));
+//        viewHolder.imageView.setImageBitmap(images.get(position));
+        Picasso.get().load(images.get(position)).into(viewHolder.imageView);
     }
 
     @Override

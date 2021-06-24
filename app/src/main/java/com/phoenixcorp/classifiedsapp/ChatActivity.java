@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -35,8 +36,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatActivity extends AppCompatActivity {
 
+    private static final String TAG = "";
     String receiverImage, receiverUID, receiverName;
-    String senderUID;
+    String buyerUID, buyerName, buyerImage;
+    String senderUID, senderName;
     CircleImageView profileImg;
     TextView receivername;
     FirebaseFirestore firestore;
@@ -66,6 +69,18 @@ public class ChatActivity extends AppCompatActivity {
         receiverImage = getIntent().getStringExtra("ReceiverImage");
         receiverName = getIntent().getStringExtra("name");
         receiverUID = getIntent().getStringExtra("UID");
+        buyerImage = getIntent().getStringExtra("BuyerUri");
+        buyerName = getIntent().getStringExtra("BuyerName");
+        buyerUID = getIntent().getStringExtra("BuyerUID");
+
+
+        Log.d("onCreate: ", receiverImage);
+        Log.d("onCreate: ", receiverName);
+//        Log.d("onCreate: ", receiverUID);
+//        Log.d("onCreate: ", buyerImage);
+//        Log.d("onCreate: ", buyerName);
+//        Log.d("onCreate: ", buyerUID);
+
 
         profileImg = findViewById(R.id.profile_image);
 
@@ -92,16 +107,33 @@ public class ChatActivity extends AppCompatActivity {
         messageAdapter.setAdapter(adapter);
 
         DocumentReference userReference = firestore.collection("users").document(firebaseAuth.getUid());
-        CollectionReference chatReference = firestore.collection("Newchats").document(firebaseAuth.getUid()).collection("messages sent to");
+        CollectionReference chatSentReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages sent to").document(receiverUID).collection("messages");
+        CollectionReference chatReceivedReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages received from").document(senderUID).collection("messages");
 
-        chatReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        chatSentReference.orderBy("timeStamp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-                    Messages message = documentSnapshot.toObject(Messages.class);
-                    messagesArrayList.add(message);
+                if(!queryDocumentSnapshots.isEmpty()) {
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        Messages message = documentSnapshot.toObject(Messages.class);
+//                        if (!messagesArrayList.contains(message))
+                            messagesArrayList.add(message);
+                    }
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
+            }
+        });
+        chatReceivedReference.orderBy("timeStamp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if(!queryDocumentSnapshots.isEmpty()){
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                        Messages message = documentSnapshot.toObject(Messages.class);
+                        if (!messagesArrayList.contains(message))
+                            messagesArrayList.add(message);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
 
@@ -109,6 +141,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 senderImg = documentSnapshot.getString("imageURI");
+                senderName = documentSnapshot.getString("username");
                 receiverImg = receiverImage;
 
             }
@@ -126,12 +159,12 @@ public class ChatActivity extends AppCompatActivity {
                 chatMsg.setText("");
                 Date date = new Date();
                 Messages m = new Messages(receiverName, receiverImage, chat, senderUID, date.getTime());
-                firestore.collection("Newchats").document(senderUID).set(m);
-                firestore.collection("Newchats").document(senderUID).collection("messages sent to").document(receiverUID).set(m);
+                firestore.collection("chats").document(senderUID).set(m);
+                firestore.collection("chats").document(senderUID).collection("messages sent to").document(receiverUID).set(m);
 
 
                 firestore.
-                        collection("Newchats").
+                        collection("chats").
                         document(senderUID).
                         collection("messages sent to").document(receiverUID).collection("messages").
                         add(m).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
@@ -139,13 +172,27 @@ public class ChatActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if(task.isSuccessful()) {
                             Toast.makeText(ChatActivity.this, "Message sent", Toast.LENGTH_SHORT).show();
-                            firestore.collection("Newchats").document(receiverUID).set(m);
-                            firestore.collection("Newchats").document(receiverUID).collection("messages received from").document(senderUID).set(m);
+                            messagesArrayList.add(m);
+                            adapter.notifyDataSetChanged();
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("chat", chat);
+                            if(buyerName!=null) {
+                                map.put("imageURI", buyerImage);
+                                map.put("senderName", buyerName);
+                            }
+                            else {
+                                map.put("imageURI", senderImg);
+                                map.put("senderName", senderName);
+                            }
+                            map.put("timeStamp", date.getTime());
+                            map.put("senderID", firebaseAuth.getUid());
+                            firestore.collection("chats").document(receiverUID).set(map);
+                            firestore.collection("chats").document(receiverUID).collection("messages received from").document(senderUID).set(map);
 
-                            firestore.collection("Newchats").
+                            firestore.collection("chats").
                                     document(receiverUID).
                                     collection("messages received from").document(senderUID).collection("messages").
-                                    add(m).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                    add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentReference> task) {
                                     if(task.isSuccessful()){

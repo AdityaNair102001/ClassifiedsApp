@@ -1,18 +1,20 @@
 package com.phoenixcorp.classifiedsapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,15 +26,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
-import org.w3c.dom.Document;
-
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,6 +87,8 @@ public class ChatFragment extends Fragment {
     FirebaseFirestore firestore;
     FirebaseStorage storage;
     TextView exploreBtn;
+    ProgressBar progressBar;
+    Users tempUser;
 
     ArrayList<Users> usersArrayList;
 
@@ -105,65 +105,111 @@ public class ChatFragment extends Fragment {
         storage = FirebaseStorage.getInstance();
         usersArrayList = new ArrayList<>();
 
+        View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        DocumentReference reference = firestore.collection("Newchats").document(auth.getUid());
 
-        if(reference.getId() == null){
-            View v = inflater.inflate(R.layout.empty_chat_layout, container, false);
-            exploreBtn = (TextView) v.findViewById(R.id.explore_ads_button);
-            exploreBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(getActivity(), DefaultPageActivity.class));
+        progressBar = view.findViewById(R.id.chat_progress);
+        progressBar.setVisibility(View.VISIBLE);
 
-                }
-            });
+        ChatList = view.findViewById(R.id.ChatList);
+        adapter = new ChatListAdapter(usersArrayList, this);
 
-            return v;
-        }
-        else {
 
-            reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot documentSnapshot = task.getResult();
-                        if (documentSnapshot.exists()) {
-                            CollectionReference ref = firestore.collection("Newchats").document(auth.getUid()).collection("messages sent to");
+        DocumentReference reference = firestore.collection("chats").document(auth.getUid());
 
-                            ref.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+        reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public synchronized void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if (documentSnapshot.exists()) {
+                        CollectionReference ref = firestore.collection("chats").document(auth.getUid()).collection("messages sent to");
+
+                        ref.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public synchronized void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                if(!queryDocumentSnapshots.isEmpty()) {
                                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                                         Users users = new Users(documentSnapshot.getId(), documentSnapshot.getString("receiverName"), "generic@gmail.com", documentSnapshot.getString("imageURI"), "7359102080");
+                                        tempUser = users;
                                         Log.d("onSuccess : ", users.userName);
-                                        usersArrayList.add(users);
+                                        if(!usersArrayList.contains(users))
+                                            usersArrayList.add(users);
                                     }
-                                    adapter.notifyDataSetChanged();
+                                    firestore.collection("chats").document(auth.getUid()).collection("messages received from").
+                                            get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public synchronized void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            if (!queryDocumentSnapshots.isEmpty()) {
+                                                for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
+                                                    Users users = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080");
+                                                    if(usersArrayList.contains(tempUser)) usersArrayList.remove(tempUser);
+                                                    if (!usersArrayList.contains(users)) {
+                                                        usersArrayList.add(users);
+                                                    }
+                                                }
+                                                progressBar.setVisibility(View.GONE);
+                                                adapter.notifyDataSetChanged();
+                                            }
+                                            else{
+                                                adapter.notifyDataSetChanged();
+                                                progressBar.setVisibility(View.GONE);
+                                            }
+                                        }
+                                    });
                                 }
-                            });
-                        } else {
-//                            Toast.makeText(getContext(), "list is empty", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(getContext(), reference.getId(), Toast.LENGTH_SHORT).show();
-
-                        }
+                                else{
+                                    firestore.collection("chats").
+                                            document(auth.getUid()).
+                                            collection("messages received from").
+                                            get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public synchronized void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            for(QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots){
+                                                Users uusers = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080");
+                                                if(!usersArrayList.contains(uusers))
+                                                    usersArrayList.add(uusers);
+                                            }
+                                            progressBar.setVisibility(View.GONE);
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                            }
+                        });
                     }
+                    else {
+                        Toast.makeText(getContext(), "No Chats Yet!", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getContext(), reference.collection("messages sent to").toString(), Toast.LENGTH_SHORT).show();
 
+                    }
                 }
-            });
+
+            }
+        });
+
+//        if(usersArrayList.isEmpty()){
+//            View v = inflater.inflate(R.layout.empty_chat_layout, container, false);
+//            exploreBtn = (TextView) v.findViewById(R.id.explore_ads_button);
+//            exploreBtn.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    startActivity(new Intent(getActivity(), DefaultPageActivity.class));
+//
+//                }
+//            });
+//            return v;
+//        }
 
 
-            View view = inflater.inflate(R.layout.fragment_chat, container, false);
+        ChatList.setHasFixedSize(true);
+        ChatList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
-            ChatList = view.findViewById(R.id.ChatList);
-            ChatList.setHasFixedSize(true);
-            ChatList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        ChatList.setAdapter(adapter);
 
-            adapter = new ChatListAdapter(usersArrayList, this);
-            ChatList.setAdapter(adapter);
+        return view;
 
-            return view;
-        }
 
 
 //        int flag = 0;
@@ -182,14 +228,7 @@ public class ChatFragment extends Fragment {
 //        }
 //        else{
 //            View v = inflater.inflate(R.layout.empty_chat_layout, container, false);
-//            exploreBtn = (TextView) v.findViewById(R.id.explore_ads_button);
-//            exploreBtn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    startActivity(new Intent(getActivity(), DefaultPageActivity.class));
-//
-//                }
-//            });
+
 //
 //            return v;
 //        }

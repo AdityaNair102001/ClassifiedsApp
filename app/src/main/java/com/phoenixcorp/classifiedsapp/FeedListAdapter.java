@@ -56,9 +56,9 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
     public void onBindViewHolder(@NonNull FeedListViewHolder holder, int position) {
         String productName=products.get(position);
         String price= "\u20B9"+ prices.get(position);
-        String url=imageURLs.get(productName);
         String productLocation = location.get(position);
         String docID = DocumentID.get(position);
+        String url=imageURLs.get(docID);
         String sellerUID = UIDs.get(position);
         holder.productName.setText(productName);
         holder.location.setText(location.get(position));

@@ -129,7 +129,7 @@ public class HomeFragment extends Fragment {
 
                                 for(int i=0;i<1;i++){
 //                                    imageURLFromDB.add(documentList.get(i).getString("url"));
-                                    imageURLFromDB.put(document.getString("productName"),documentList.get(i).getString("url"));
+                                    imageURLFromDB.put(document.getId(),documentList.get(i).getString("url"));
                                 }
 
                                 adapterHandler(productsFromDB,priceFromDB,imageURLFromDB,UIDFromDB,location,names,feed,progressBar,documentID);
@@ -186,10 +186,10 @@ public class HomeFragment extends Fragment {
     }
 
     private void adapterHandler(ArrayList<String> products,ArrayList<String> prices, HashMap<String,String> imagesURLs, ArrayList<String> UIDs,
-                                ArrayList<String> location, HashMap<String,String> names,RecyclerView feed,CircularProgressIndicator progressBar) {
-        FeedListAdapter adapter=new FeedListAdapter(products,prices,imagesURLs,UIDs,location,names,this);
-    private void adapterHandler(ArrayList<String> products,ArrayList<String> prices, HashMap<String,String> imagesURLs, ArrayList<String> UIDs,ArrayList<String> location,HashMap<String,String> names,RecyclerView feed, ArrayList<String> documentID) {
-        FeedListAdapter adapter=new FeedListAdapter(products,prices,imagesURLs,UIDs,location,names,this, documentID);
+                                ArrayList<String> location, HashMap<String,String> names,RecyclerView feed,CircularProgressIndicator progressBar,ArrayList<String> documentID) {
+
+        FeedListAdapter adapter=new FeedListAdapter(products,prices,imagesURLs,UIDs,location,names,this,documentID);
+
         if(imagesURLs.size()!=products.size() && names.size()!=products.size()){
             return;
         }else{
@@ -198,6 +198,7 @@ public class HomeFragment extends Fragment {
             Collections.reverse(prices);
             Collections.reverse(UIDs);
             Collections.reverse(location);
+            Collections.reverse(documentID);
 
 
             Log.d("products", "onCreateView:173 "+imagesURLs);

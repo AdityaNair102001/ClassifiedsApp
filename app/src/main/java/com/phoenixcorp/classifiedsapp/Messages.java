@@ -1,5 +1,7 @@
 package com.phoenixcorp.classifiedsapp;
 
+import java.util.Comparator;
+
 public class Messages {
 
     String receiverName;
@@ -58,5 +60,16 @@ public class Messages {
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
     }
+
+    public static Comparator<Messages> MessagesComparator = new Comparator<Messages>() {
+        @Override
+        public int compare(Messages messages, Messages t1) {
+
+            long timeStamp1 = messages.getTimeStamp();
+            long timeStamp2 = messages.getTimeStamp();
+
+            return (int) (timeStamp1 - timeStamp2);
+        }
+    };
 
 }

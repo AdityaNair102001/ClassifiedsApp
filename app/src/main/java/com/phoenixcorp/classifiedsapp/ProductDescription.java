@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -144,7 +145,6 @@ public class ProductDescription extends AppCompatActivity {
                         sellerPhoneNo = snapshot.getString("phone");
                         sellerNameView.setText(sellername);
                         Picasso.get().load(sellerURI).into(sellerImageView);
-
                         callButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {

@@ -1,21 +1,34 @@
 package com.phoenixcorp.classifiedsapp;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -23,11 +36,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,14 +53,6 @@ import java.util.Objects;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
-
-    private TextView uName, uEmail, uPhone;
-    private ImageView uImage;
-
-    private FirebaseFirestore fStore;
-    private FirebaseAuth fAuth;
-
-    private Button logout_btn;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -85,12 +95,27 @@ public class ProfileFragment extends Fragment {
 
     }
 
+    static final String TAG = "MAIN_TAG";
+    private TextView uName, uEmail, uPhone;
+    private ImageView uImage, uEditImage, uEditName;
+
+    private FirebaseFirestore fStore;
+    private FirebaseAuth fAuth;
+    StorageReference storageReference;
+    DocumentReference documentReference;
+
+
+    private Uri userImage;
+    private String userID;
+    private Button logout_btn;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
@@ -99,6 +124,8 @@ public class ProfileFragment extends Fragment {
         uName = v.findViewById(R.id.UserNameText);
         uPhone = v.findViewById(R.id.UserPhoneText);
         logout_btn = v.findViewById(R.id.logout);
+        uEditImage = v.findViewById(R.id.ChangeImage);
+        uEditName = v.findViewById(R.id.ChangeUserName);
 
         String UserID = Objects.requireNonNull(fAuth.getCurrentUser()).getUid();
         DocumentReference documentReference = fStore.collection("users").document(UserID);
@@ -136,8 +163,149 @@ public class ProfileFragment extends Fragment {
                 logout(view);
             }
         });
+
+        uEditImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeProfile(view);
+            }
+        });
+
+        uEditName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeName(view);
+            }
+        });
         // Inflate the layout for this fragment
         return v;
+    }
+
+    private void changeName(View view) {
+        final EditText newName = new EditText(view.getContext());
+        final AlertDialog.Builder changeNameDialog = new AlertDialog.Builder(view.getContext());
+        changeNameDialog.setTitle("Change Name ?");
+        changeNameDialog.setMessage("Enter Your New Name.");
+        changeNameDialog.setView(newName);
+
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        String UserID = fAuth.getCurrentUser().getUid();
+
+
+
+        changeNameDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String nName = newName.getText().toString();
+
+                uName.setText(nName);
+
+                documentReference = fStore.collection("users").document(UserID);
+
+                documentReference.update("username", nName).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(getActivity(), "Name Updated Successfully.", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onSuccess: user Profile is created for " + UserID);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception e) {
+                        Toast.makeText(getActivity(), "Name Was Not Updated.", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onFailure: user Profile Update Failed " + UserID);
+                    }
+                });
+            }
+        });
+
+        changeNameDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // close the dialog
+            }
+        });
+
+        changeNameDialog.create().show();
+    }
+
+    private void changeProfile(View view) {
+
+        if(ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},100);
+            return;
+
+        }
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent,1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 && resultCode == RESULT_OK && data!=null && data.getData()!=null){
+                userImage = data.getData();
+                Picasso.get().load(userImage)
+                        .into(uImage);
+
+                UploadImageToStorage(userImage);
+
+        }
+    }
+
+    private void UploadImageToStorage(Uri imageURI) {
+        ProgressDialog pd= new ProgressDialog(getActivity());
+        pd.setMessage("Uploading Images");
+        pd.show();
+
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        String UserID = fAuth.getCurrentUser().getUid();
+
+        StorageReference ImagesFolder = FirebaseStorage.getInstance().getReference().child("profile_images");
+        StorageReference imageName= ImagesFolder.child("profile_image"+imageURI.getLastPathSegment());
+
+        imageName.putFile(imageURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(getActivity(), "User Profile Image Added.", Toast.LENGTH_SHORT).show();
+
+                imageName.putFile(imageURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        imageName.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String url= String.valueOf(uri);
+                                Log.d("URL", "onSuccess : "+ url);
+
+                                documentReference = fStore.collection("users").document(UserID);
+
+                                documentReference.update("imageURI", url).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        pd.dismiss();
+                                        Toast.makeText(getActivity(), "Images Uploaded Successfully.", Toast.LENGTH_SHORT).show();
+                                        Log.d(TAG, "onSuccess: user Profile is created for " + UserID);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                Toast.makeText(getActivity(), "Sorry! Couldn't Store the Image.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     public void logout(View view) {
@@ -145,4 +313,6 @@ public class ProfileFragment extends Fragment {
         startActivity(new Intent(getActivity(),LoginActivity.class));
         getActivity().finish();
     }
+
+
 }

@@ -29,7 +29,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
     }
 
 
-
     @NonNull
     @Override
     public ChatListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

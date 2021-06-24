@@ -104,6 +104,7 @@ public class NewPostActivity extends AppCompatActivity {
 
 
         ProgressDialog pd= new ProgressDialog(this);
+        pd.setCancelable(false);
 
 
         post.setOnClickListener(v->{

@@ -31,7 +31,7 @@
                 app:layout_constraintTop_toTopOf="@id/constraintContainer">
 
                 <com.smarteist.autoimageslider.SliderView
-                    android:id="@+id/imageSlider"
+                    android:id="@+id/desc_product_imageSlider"
                     android:layout_width="match_parent"
                     android:layout_height="350dp"
                     android:background="@color/white"
@@ -58,28 +58,48 @@
                     android:layout_height="wrap_content"
                     android:textSize="25dp"
                     android:text="Test Product Name"
+                    android:textColor="@color/black"
                     android:fontFamily="sans-serif-condensed-medium"/>
 
                 <TextView
+                    android:id="@+id/desc_product_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:textColor="@color/black"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
                     android:text="₹150"
                     android:textSize="20dp"/>
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/desc_product_location"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:text="Royal Heights, Khariwad, Nani Daman, Daman - 396210"
-                android:textSize="15dp"
-                android:fontFamily="sans-serif-condensed-light"/>
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/locationpin"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="16dp"
+                    app:tint="@color/colorPrimary"/>
+
+                <TextView
+                    android:id="@+id/desc_product_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="16dp"
+                    android:text="Royal Heights, Khariwad, Nani Daman, Daman - 396210"
+                    android:textSize="15dp"
+                    android:fontFamily="sans-serif-condensed-light"/>
+
+            </LinearLayout>
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -88,6 +108,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:text="PRODUCT DESCRIPTION"
+                android:textColor="@color/black"
                 android:textSize="17dp"
                 android:fontFamily="sans-serif-condensed"/>
 
@@ -97,12 +118,13 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/product_desc_box"
                 android:paddingTop="10dp"
+                android:textColor="@color/grey"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:paddingLeft="7dp"
                 android:paddingRight="7dp"
                 android:paddingBottom="10dp"
-                android:text="bahot saara description bahot saara description bahot saara description bahot saara description bahot saara description bahot saara description bahot saara description bahot saara description bahot saara description bahot saara description bahot saara description bahot saara description bahot saara description bahot saara description bahot saara description "
+                android:text=""
                 android:textSize="17dp"/>
 
             <TextView
@@ -111,6 +133,7 @@
                 android:paddingTop="16dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
+                android:textColor="@color/black"
                 android:text="Seller"
                 android:textSize="17dp"
                 android:fontFamily="sans-serif-condensed"/>
@@ -136,8 +159,7 @@
                         android:layout_width="65dp"
                         android:layout_height="65dp"
                         android:layout_margin="10dp"
-                        android:layout_centerHorizontal="true"
-                        android:src="@drawable/dogprofile">
+                        android:layout_centerHorizontal="true">
 
                     </de.hdodenhof.circleimageview.CircleImageView>
 
@@ -147,6 +169,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/desc_product_sellerImg"
                         android:textAlignment="center"
+                        android:textColor="@color/grey"
                         android:text="Elon Musk"/>
 
 
@@ -156,7 +179,6 @@
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
-
 
 
     </ScrollView>
@@ -171,6 +193,7 @@
         android:layout_weight="1">
 
         <LinearLayout
+            android:id="@+id/chatButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -201,6 +224,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/callButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

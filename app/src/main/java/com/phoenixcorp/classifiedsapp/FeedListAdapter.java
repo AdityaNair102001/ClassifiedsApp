@@ -1,6 +1,5 @@
 package com.phoenixcorp.classifiedsapp;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,14 +56,14 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
     public void onBindViewHolder(@NonNull FeedListViewHolder holder, int position) {
         String productName=products.get(position);
         String price= "\u20B9"+ prices.get(position);
-        String url=imageURLs.get(productName);
         String productLocation = location.get(position);
         String docID = DocumentID.get(position);
+        String url=imageURLs.get(docID);
         String sellerUID = UIDs.get(position);
         holder.productName.setText(productName);
         holder.location.setText(location.get(position));
         holder.price.setText(price);
-        Picasso.get().load(url).into(holder.feedImage);
+        Picasso.get().load(url).placeholder(R.drawable.loader).into(holder.feedImage);
 
         holder.productCard.setOnClickListener(v -> {
             Intent intent = new Intent(homeFragment.getActivity(), ProductDescription.class);

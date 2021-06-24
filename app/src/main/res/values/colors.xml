@@ -13,7 +13,7 @@
     <color name="colorPrimary">#E81F10</color>
     <color name="colorPrimaryVariant">#DD3629</color>
     <color name="gradEnd">#DA2EF8</color>
-    <color name="gradStart">#DF0000</color>
+    <color name="gradStart">#E81F10</color>
     <color name="solidCircle">#AAFFFFFF</color>
     <color name="circleBorder">#50FFFFFF</color>
 

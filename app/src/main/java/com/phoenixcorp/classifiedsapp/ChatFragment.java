@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -87,7 +88,7 @@ public class ChatFragment extends Fragment {
     FirebaseFirestore firestore;
     FirebaseStorage storage;
     TextView exploreBtn;
-    ProgressBar progressBar;
+    CircularProgressIndicator progressBar;
     Users tempUser;
 
     ArrayList<Users> usersArrayList;
@@ -108,7 +109,7 @@ public class ChatFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
 
-        progressBar = view.findViewById(R.id.chat_progress);
+        progressBar = view.findViewById(R.id.chatProgress);
         progressBar.setVisibility(View.VISIBLE);
 
         ChatList = view.findViewById(R.id.ChatList);
@@ -144,8 +145,8 @@ public class ChatFragment extends Fragment {
                                             if (!queryDocumentSnapshots.isEmpty()) {
                                                 for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
                                                     Users users = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080");
-                                                    if(usersArrayList.contains(tempUser)) usersArrayList.remove(tempUser);
-                                                    if (!usersArrayList.contains(users)) {
+//                                                    if(usersArrayList.contains(tempUser)) usersArrayList.remove(tempUser);
+                                                    if (!usersArrayList.contains(tempUser)) {
                                                         usersArrayList.add(users);
                                                     }
                                                 }
@@ -172,7 +173,6 @@ public class ChatFragment extends Fragment {
                                                     usersArrayList.add(uusers);
                                             }
                                             progressBar.setVisibility(View.GONE);
-                                            adapter.notifyDataSetChanged();
                                         }
                                     });
                                 }
@@ -189,20 +189,20 @@ public class ChatFragment extends Fragment {
             }
         });
 
-//        if(usersArrayList.isEmpty()){
-//            View v = inflater.inflate(R.layout.empty_chat_layout, container, false);
-//            exploreBtn = (TextView) v.findViewById(R.id.explore_ads_button);
-//            exploreBtn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    startActivity(new Intent(getActivity(), DefaultPageActivity.class));
-//
-//                }
-//            });
-//            return v;
-//        }
+        if(usersArrayList.isEmpty()){
+            View v = inflater.inflate(R.layout.empty_chat_layout, container, false);
+            exploreBtn = (TextView) v.findViewById(R.id.explore_ads_button);
+            exploreBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(getActivity(), DefaultPageActivity.class));
 
+                }
+            });
+            return v;
+        }
 
+        adapter.notifyDataSetChanged();
         ChatList.setHasFixedSize(true);
         ChatList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 

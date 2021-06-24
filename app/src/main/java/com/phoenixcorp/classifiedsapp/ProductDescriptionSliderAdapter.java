@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 import com.squareup.picasso.Picasso;
 
@@ -45,7 +46,6 @@ public class ProductDescriptionSliderAdapter extends SliderViewAdapter<ProductDe
 
     @Override
     public void onBindViewHolder(SliderAdapterVH viewHolder, int position) {
-//        viewHolder.imageView.setImageBitmap(images.get(position));
         Picasso.get().load(images.get(position)).into(viewHolder.imageView);
     }
 

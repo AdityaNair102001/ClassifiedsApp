@@ -3,17 +3,20 @@ package com.phoenixcorp.classifiedsapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -58,6 +61,8 @@ public class ProductDescription extends AppCompatActivity {
     String sellerURI, sellerPhoneNo;
     String BuyerUID, BuyerUri, BuyerName;
 
+    ProgressDialog progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +70,7 @@ public class ProductDescription extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Product Description");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));
 
 
         auth = FirebaseAuth.getInstance();
@@ -94,6 +100,12 @@ public class ProductDescription extends AppCompatActivity {
         productPriceView.setText(productprice);
         productLocationView.setText(productlocation);
         sellerNameView.setText(sellername);
+
+        progressBar = new ProgressDialog(ProductDescription.this);
+        progressBar.setCancelable(false);
+        progressBar.setMessage("Loading... Please Wait!");
+
+        progressBar.show();
 
         chatButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,6 +158,7 @@ public class ProductDescription extends AppCompatActivity {
                         sellerPhoneNo = snapshot.getString("phone");
                         sellerNameView.setText(sellername);
                         Picasso.get().load(sellerURI).into(sellerImageView);
+                        progressBar.dismiss();
                         callButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {

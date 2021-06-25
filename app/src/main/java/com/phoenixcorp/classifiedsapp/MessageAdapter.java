@@ -1,6 +1,7 @@
 package com.phoenixcorp.classifiedsapp;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,12 +9,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -24,9 +28,13 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
     Context context;
     ArrayList<Messages> messagesArrayList;
+
     int ITEM_SEND = 1, ITEM_RECEIVE = 2;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public MessageAdapter(Context context, ArrayList<Messages> messagesArrayList) {
+        Collections.sort(messagesArrayList, Comparator.comparing(Messages::getTimeStamp));
+
         this.context = context;
         this.messagesArrayList = messagesArrayList;
     }
@@ -48,6 +56,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
         Messages messages = messagesArrayList.get(position);
 
         if(holder.getClass() == senderViewHolder.class)
@@ -67,7 +76,6 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-
         return messagesArrayList.size();
     }
 

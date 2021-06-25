@@ -1,12 +1,14 @@
 package com.phoenixcorp.classifiedsapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.collection.CircularArray;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
@@ -28,6 +30,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -108,7 +112,7 @@ public class ChatActivity extends AppCompatActivity {
 
         DocumentReference userReference = firestore.collection("users").document(firebaseAuth.getUid());
         CollectionReference chatSentReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages sent to").document(receiverUID).collection("messages");
-        CollectionReference chatReceivedReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages received from").document(senderUID).collection("messages");
+        CollectionReference chatReceivedReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages received from").document(receiverUID).collection("messages");
 
         chatSentReference.orderBy("timeStamp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -117,13 +121,13 @@ public class ChatActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         Messages message = documentSnapshot.toObject(Messages.class);
 //                        if (!messagesArrayList.contains(message))
-                            messagesArrayList.add(message);
+                        messagesArrayList.add(message);
                     }
-                    adapter.notifyDataSetChanged();
                 }
             }
         });
         chatReceivedReference.orderBy("timeStamp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if(!queryDocumentSnapshots.isEmpty()){
@@ -132,6 +136,8 @@ public class ChatActivity extends AppCompatActivity {
                         if (!messagesArrayList.contains(message))
                             messagesArrayList.add(message);
                     }
+//                    messagesArrayList.sort(Comparator.comparing(Messages::getTimeStamp));
+                    Collections.sort(messagesArrayList, Comparator.comparing(Messages::getTimeStamp));
                     adapter.notifyDataSetChanged();
                 }
             }
@@ -168,11 +174,14 @@ public class ChatActivity extends AppCompatActivity {
                         document(senderUID).
                         collection("messages sent to").document(receiverUID).collection("messages").
                         add(m).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if(task.isSuccessful()) {
                             Toast.makeText(ChatActivity.this, "Message sent", Toast.LENGTH_SHORT).show();
                             messagesArrayList.add(m);
+//                            messagesArrayList.sort(Comparator.comparing(Messages::getTimeStamp));
+                            Collections.sort(messagesArrayList, Comparator.comparing(Messages::getTimeStamp));
                             adapter.notifyDataSetChanged();
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("chat", chat);

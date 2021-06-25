@@ -114,7 +114,7 @@ public class ChatActivity extends AppCompatActivity {
         CollectionReference chatSentReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages sent to").document(receiverUID).collection("messages");
         CollectionReference chatReceivedReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages received from").document(receiverUID).collection("messages");
 
-        chatSentReference.orderBy("timeStamp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        chatSentReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if(!queryDocumentSnapshots.isEmpty()) {
@@ -122,11 +122,13 @@ public class ChatActivity extends AppCompatActivity {
                         Messages message = documentSnapshot.toObject(Messages.class);
 //                        if (!messagesArrayList.contains(message))
                         messagesArrayList.add(message);
+                        adapter.notifyDataSetChanged();
+
                     }
                 }
             }
         });
-        chatReceivedReference.orderBy("timeStamp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        chatReceivedReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {

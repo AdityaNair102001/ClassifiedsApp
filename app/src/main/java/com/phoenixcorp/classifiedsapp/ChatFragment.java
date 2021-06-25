@@ -181,8 +181,7 @@ public class ChatFragment extends Fragment {
                                         public synchronized void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                             for(QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots){
                                                 Users uusers = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080");
-                                                if(!usersArrayList.contains(uusers))
-                                                    usersArrayList.add(uusers);
+                                                usersArrayList.add(uusers);
                                                 adapter.notifyDataSetChanged();
                                             }
                                             progressBar.setVisibility(View.GONE);
@@ -201,18 +200,6 @@ public class ChatFragment extends Fragment {
 
             }
         });
-//        if(usersArrayList.isEmpty()){
-//            View v = inflater.inflate(R.layout.empty_chat_layout, container, false);
-//            exploreBtn = v.findViewById(R.id.explore_ads_button);
-//            exploreBtn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    startActivity(new Intent(getActivity(), DefaultPageActivity.class));
-//
-//                }
-//            });
-//            return v;
-//        }
 
         ChatList.setHasFixedSize(true);
         ChatList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));

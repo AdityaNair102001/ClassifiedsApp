@@ -56,6 +56,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
         Messages messages = messagesArrayList.get(position);
 
         if(holder.getClass() == senderViewHolder.class)
@@ -75,7 +76,6 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-
         return messagesArrayList.size();
     }
 

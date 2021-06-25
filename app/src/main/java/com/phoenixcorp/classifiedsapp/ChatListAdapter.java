@@ -13,7 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -42,16 +45,28 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
     public void onBindViewHolder(@NonNull ChatListAdapter.ChatListViewHolder holder, int position) {
 
         Users users = names.get(position);
-        holder.name.setText(users.userName);
-        Picasso.get().load(users.imageURI).into(holder.circleImageView);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        String receiverUid = users.getUid();
+        FirebaseFirestore.getInstance().collection("users").document(receiverUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(chatFragment.getActivity(), ChatActivity.class);
-                intent.putExtra("name", users.getUserName());
-                intent.putExtra("ReceiverImage", users.getImageURI());
-                intent.putExtra("UID", users.getUid());
-                chatFragment.startActivity(intent);
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists()){
+                    String receiverImg = documentSnapshot.getString("imageURI");
+                    String receiverNem = documentSnapshot.getString("username");
+                    Picasso.get().load(receiverImg).into(holder.circleImageView);
+                    holder.name.setText(receiverNem);
+
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(chatFragment.getActivity(), ChatActivity.class);
+                            intent.putExtra("name", receiverNem);
+                            intent.putExtra("ReceiverImage", receiverImg);
+                            intent.putExtra("UID", receiverUid);
+                            chatFragment.startActivity(intent);
+                        }
+                    });
+
+                }
             }
         });
 

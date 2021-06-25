@@ -62,6 +62,7 @@ public class ChatActivity extends AppCompatActivity {
 
     MessageAdapter adapter;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +106,7 @@ public class ChatActivity extends AppCompatActivity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
+
         adapter = new MessageAdapter(ChatActivity.this, messagesArrayList);
         messageAdapter.setLayoutManager(linearLayoutManager);
 
@@ -116,30 +118,34 @@ public class ChatActivity extends AppCompatActivity {
 
         chatSentReference.orderBy("timeStamp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+            public synchronized void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if(!queryDocumentSnapshots.isEmpty()) {
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         Messages message = documentSnapshot.toObject(Messages.class);
 //                        if (!messagesArrayList.contains(message))
                         messagesArrayList.add(message);
                     }
+
                 }
-            }
-        });
-        chatReceivedReference.orderBy("timeStamp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if(!queryDocumentSnapshots.isEmpty()){
-                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-                        Messages message = documentSnapshot.toObject(Messages.class);
-                        if (!messagesArrayList.contains(message))
-                            messagesArrayList.add(message);
-                    }
+                chatReceivedReference.orderBy("timeStamp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public synchronized void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if(!queryDocumentSnapshots.isEmpty()){
+                            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                                Messages message = documentSnapshot.toObject(Messages.class);
+                                if (!messagesArrayList.contains(message)) {
+                                    messagesArrayList.add(message);
+                                }
+                            }
 //                    messagesArrayList.sort(Comparator.comparing(Messages::getTimeStamp));
-                    Collections.sort(messagesArrayList, Comparator.comparing(Messages::getTimeStamp));
-                    adapter.notifyDataSetChanged();
-                }
+                            Collections.sort(messagesArrayList, Comparator.comparing(Messages::getTimeStamp));
+                            adapter.notifyDataSetChanged();
+                            messageAdapter.smoothScrollToPosition(adapter.getItemCount());
+
+                        }
+                    }
+                });
             }
         });
 
@@ -164,7 +170,7 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 chatMsg.setText("");
                 Date date = new Date();
-                Messages m = new Messages(receiverName, receiverImage, chat, senderUID, date.getTime());
+                Messages m = new Messages(receiverName, receiverImg, chat, senderUID, date.getTime());
                 firestore.collection("chats").document(senderUID).set(m);
                 firestore.collection("chats").document(senderUID).collection("messages sent to").document(receiverUID).set(m);
 
@@ -183,6 +189,8 @@ public class ChatActivity extends AppCompatActivity {
 //                            messagesArrayList.sort(Comparator.comparing(Messages::getTimeStamp));
                             Collections.sort(messagesArrayList, Comparator.comparing(Messages::getTimeStamp));
                             adapter.notifyDataSetChanged();
+                            messageAdapter.smoothScrollToPosition(adapter.getItemCount());
+
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("chat", chat);
                             if(buyerName!=null) {
@@ -205,7 +213,7 @@ public class ChatActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentReference> task) {
                                     if(task.isSuccessful()){
-                                        Toast.makeText(ChatActivity.this, "Message received", Toast.LENGTH_SHORT).show();
+
                                     }
                                     else{
                                         Toast.makeText(ChatActivity.this, "Error", Toast.LENGTH_SHORT).show();
@@ -216,7 +224,6 @@ public class ChatActivity extends AppCompatActivity {
                         }
                         else
                             Toast.makeText(ChatActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
-
                     }
                 });
 

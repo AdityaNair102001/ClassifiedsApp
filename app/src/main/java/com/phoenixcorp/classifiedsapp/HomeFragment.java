@@ -132,12 +132,7 @@ public class HomeFragment extends Fragment {
 
                                     List<DocumentSnapshot> documentList=task.getResult().getDocuments();
 
-
-
-                                    for(int i=0;i<1;i++){
-
-                                        imageURLFromDB.put(document.getId(),documentList.get(i).getString("url"));
-                                    }
+                                    imageURLFromDB.put(document.getId(),documentList.get(documentList.size()-1).getString("url"));
 
                                     adapterHandler(productsFromDB,priceFromDB,imageURLFromDB,UIDFromDB,location,names,feed,progressBar,documentID,likedPostsFromDB);
 

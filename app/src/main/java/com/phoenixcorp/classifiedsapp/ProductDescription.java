@@ -66,6 +66,7 @@ public class ProductDescription extends AppCompatActivity {
         getSupportActionBar().setTitle("Product Description");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 

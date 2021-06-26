@@ -9,8 +9,8 @@
 
     <item
         android:id="@+id/search"
-        android:title="@string/search"
-        android:icon="@drawable/ic_baseline_search_24"
+        android:title="@string/myAds"
+        android:icon="@drawable/ic_gh"
         />
 
     <item

@@ -1,16 +1,12 @@
 package com.phoenixcorp.classifiedsapp;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +22,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -89,8 +83,8 @@ public class HomeFragment extends Fragment {
 
         View view=inflater.inflate(R.layout.fragment_home,container,false);
 
-        RecyclerView feed=view.findViewById(R.id.feed);
-        CircularProgressIndicator progressBar=view.findViewById(R.id.progressBar);
+        RecyclerView feed=view.findViewById(R.id.myPosts);
+        CircularProgressIndicator progressBar=view.findViewById(R.id.progressBarPosts);
 
         progressBar.setVisibility(View.VISIBLE);
 

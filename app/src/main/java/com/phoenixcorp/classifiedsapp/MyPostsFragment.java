@@ -1,12 +1,31 @@
 package com.phoenixcorp.classifiedsapp;
 
+import android.accessibilityservice.GestureDescription;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,10 +74,71 @@ public class MyPostsFragment extends Fragment {
         }
     }
 
+    RecyclerView myPostList;
+    CircularProgressIndicator pd;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_posts, container, false);
+        View view=inflater.inflate(R.layout.fragment_my_posts, container, false);
+
+        myPostList=view.findViewById(R.id.myPosts);
+        pd=view.findViewById(R.id.progressBarPosts);
+
+        pd.setVisibility(View.INVISIBLE);
+
+        ArrayList<String> productNamesFromDB= new ArrayList<>();
+        ArrayList<String> pricesFromDB=new ArrayList<>();
+        ArrayList<String> productDescriptionFromDB=new ArrayList<>();
+        ArrayList<String> locationFromDB=new ArrayList<>();
+        ArrayList<String> documentID = new ArrayList<>();
+
+        HashMap<String, String> imageUrlsFromDB=new HashMap<>();
+
+        String[] names={"Aaloo","Bhujia","Vada","Dosa","Chamanti","Porota"};
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final String currentUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
+        db.collection("users").document(currentUser).collection("my posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(DocumentSnapshot documentSnapshot: Objects.requireNonNull(task.getResult())){
+                        productNamesFromDB.add(documentSnapshot.getString("productName"));
+                        pricesFromDB.add(documentSnapshot.getString("price"));
+                        productDescriptionFromDB.add(documentSnapshot.getString("productDescription"));
+                        locationFromDB.add(documentSnapshot.getString("location"));
+                        documentID.add(documentSnapshot.getId());
+
+                        db.collection("users").document(currentUser).collection("my posts").document(documentSnapshot.getId()).collection("urls").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if(task.isSuccessful()){
+                                        List<DocumentSnapshot> documentList=task.getResult().getDocuments();
+                                        imageUrlsFromDB.put(documentSnapshot.getId(),documentList.get(documentList.size()-1).getString("url"));
+
+                                        adapterHandler(productNamesFromDB,productDescriptionFromDB,pricesFromDB,locationFromDB,imageUrlsFromDB,documentID);
+                                }
+                            }
+                        });
+
+                    }
+                }
+            }
+        });
+
+
+        return view;
     }
+
+    void adapterHandler(ArrayList<String> productNames,ArrayList<String>productDescription,ArrayList<String>prices,ArrayList<String>locations,HashMap<String,String>imageUrls,ArrayList<String>documentID){
+
+        MyPostListAdapter adapter=new MyPostListAdapter(productNames,productDescription,prices,locations,imageUrls,documentID);
+        myPostList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false));
+        myPostList.setAdapter(adapter);
+    }
+
 }

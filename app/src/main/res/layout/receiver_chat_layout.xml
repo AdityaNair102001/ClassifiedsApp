@@ -14,22 +14,41 @@
         app:civ_border_width="1dp"
         app:civ_border_color="@color/colorPrimary"/>
 
-    <TextView
-        android:id="@+id/receiverText"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ayo bitch!"
-        android:textColor="@color/white"
-        android:maxWidth="190dp"
-        android:textSize="18dp"
-        android:layout_marginRight="5dp"
-        android:paddingTop="2dp"
-        android:layout_marginTop="10dp"
-        android:paddingBottom="2dp"
-        android:paddingLeft="6dp"
-        android:paddingRight="6dp"
-        android:layout_toRightOf="@+id/receiverProfile"
         android:background="@drawable/receiver_shape"
-        android:layout_centerVertical="true"/>
+        android:layout_toRightOf="@+id/receiverProfile"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/receiverText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ayo bitch!"
+            android:textColor="@color/white"
+            android:maxWidth="210dp"
+            android:textSize="18dp"
+            android:paddingTop="2dp"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/receiverTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today 6:25 PM"
+            android:layout_gravity="right"
+            android:textSize="12sp"
+            android:paddingTop="2dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:textColor="#D3D3D3"/>
+
+    </LinearLayout>
+
 
 </RelativeLayout>

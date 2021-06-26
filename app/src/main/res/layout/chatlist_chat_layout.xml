@@ -35,7 +35,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:src="@drawable/dogprofile"
+                android:src="@drawable/unknown"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:text="Elon Musk"
+                android:text=""
                 android:fontFamily="sans-serif-condensed"
                 android:textSize="20dp"
                 android:textColor="@color/black"

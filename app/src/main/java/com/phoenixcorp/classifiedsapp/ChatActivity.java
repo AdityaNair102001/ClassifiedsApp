@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -61,6 +62,9 @@ public class ChatActivity extends AppCompatActivity {
     ArrayList<Messages> messagesArrayList;
 
     MessageAdapter adapter;
+
+    CircularProgressIndicator progressBar;
+    CircularProgressIndicator msgSending;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -112,6 +116,11 @@ public class ChatActivity extends AppCompatActivity {
 
         messageAdapter.setAdapter(adapter);
 
+        progressBar = findViewById(R.id.loadMsgs);
+        progressBar.setVisibility(View.VISIBLE);
+
+        msgSending = findViewById(R.id.sendingMsg);
+
         DocumentReference userReference = firestore.collection("users").document(firebaseAuth.getUid());
         CollectionReference chatSentReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages sent to").document(receiverUID).collection("messages");
         CollectionReference chatReceivedReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages received from").document(receiverUID).collection("messages");
@@ -142,11 +151,15 @@ public class ChatActivity extends AppCompatActivity {
                             Collections.sort(messagesArrayList, Comparator.comparing(Messages::getTimeStamp));
                             adapter.notifyDataSetChanged();
                             messageAdapter.smoothScrollToPosition(adapter.getItemCount());
-
+                            progressBar.setVisibility(View.GONE);
+                        }
+                        else{
+                            progressBar.setVisibility(View.GONE);
                         }
                     }
                 });
             }
+
         });
 
         userReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -162,8 +175,9 @@ public class ChatActivity extends AppCompatActivity {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String chat = chatMsg.getText().toString();
-                chat.trim();
+                msgSending.setVisibility(View.VISIBLE);
+
+                String chat = chatMsg.getText().toString().trim();
                 if(chat.isEmpty()){
                     Toast.makeText(ChatActivity.this, "Please Enter some Message", Toast.LENGTH_SHORT).show();
                     return;
@@ -190,6 +204,7 @@ public class ChatActivity extends AppCompatActivity {
                             Collections.sort(messagesArrayList, Comparator.comparing(Messages::getTimeStamp));
                             adapter.notifyDataSetChanged();
                             messageAdapter.smoothScrollToPosition(adapter.getItemCount());
+                            msgSending.setVisibility(View.GONE);
 
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("chat", chat);

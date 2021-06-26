@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -34,6 +35,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
     ArrayList<String> UIDs;
     ArrayList<String> DocumentID;
     ArrayList<String> location;
+    ArrayList<String> productDescriptions;
 
     HashMap<String,Boolean> likedPosts;
     HashMap<String,String> names;
@@ -41,7 +43,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
 
     Fragment homeFragment;
 
-    public FeedListAdapter(ArrayList<String>products, ArrayList<String> prices, HashMap<String,String> imageURLs, ArrayList<String> UIDs, ArrayList<String> location , HashMap<String,String> names, HomeFragment homeFragment, ArrayList<String> DocumentID,HashMap<String,Boolean> likedPosts) {
+    public FeedListAdapter(ArrayList<String>products, ArrayList<String> prices, HashMap<String,String> imageURLs, ArrayList<String> UIDs, ArrayList<String> location , HashMap<String,String> names, HomeFragment homeFragment, ArrayList<String> DocumentID,HashMap<String,Boolean> likedPosts,ArrayList<String>productDescriptions) {
 
         this.products=products;
         this.prices=prices;
@@ -52,6 +54,8 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
         this.DocumentID = DocumentID;
         this.location=location;
         this.likedPosts= likedPosts;
+        this.productDescriptions=productDescriptions;
+
     }
 
     @NonNull
@@ -75,6 +79,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
         holder.location.setText(location.get(position));
         holder.price.setText(price);
         Picasso.get().load(url).placeholder(R.drawable.loader).into(holder.feedImage);
+        String productDescription=productDescriptions.get(position);
 
         holder.productCard.setOnClickListener(v -> {
             Intent intent = new Intent(homeFragment.getActivity(), ProductDescription.class);
@@ -93,13 +98,32 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
             @Override
             public void onClick(View v) {
                 if(holder.likeBtn.isChecked()){
-                    HashMap<String,String> docIDset=new HashMap();
-                    docIDset.put("docID",docID);
-                    db.collection("users").document(currentUser).collection("liked posts").document(docID).set(docIDset).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    HashMap<String,String> likedPostSet=new HashMap();
+                    likedPostSet.put("productName",productName);
+                    likedPostSet.put("price",price);
+                    likedPostSet.put("location",productLocation);
+                    likedPostSet.put("UID",sellerUID);
+                    likedPostSet.put("docID",docID);
+                    likedPostSet.put("productDescription",productDescription);
+                    db.collection("users").document(currentUser).collection("liked posts").document(docID).set(likedPostSet).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                            if(task.isSuccessful()){
                                Toast.makeText(homeFragment.getActivity(),"Added to Liked Post",Toast.LENGTH_SHORT).show();
+
+                               HashMap<String,String> likedPostUrlSet=new HashMap();
+                               likedPostUrlSet.put("url",url);
+
+                               db.collection("users").document(currentUser).collection("liked posts").document(docID).collection("urls").add(likedPostUrlSet).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                   @Override
+                                   public void onComplete(@NonNull Task<DocumentReference> task) {
+                                        if(task.isSuccessful()){
+                                            Toast.makeText(homeFragment.getActivity(),"Images added to Liked Post",Toast.LENGTH_SHORT).show();
+                                        }
+                                   }
+                               });
+
+
                            }else{
                                Toast.makeText(homeFragment.getActivity(),"Couldn't add to like post",Toast.LENGTH_LONG).show();
                            }

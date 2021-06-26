@@ -14,7 +14,8 @@
         android:theme="@style/Theme.ClassifiedsApp">
         <activity
             android:name=".ProductDescription"
-            android:parentActivityName=".DefaultPageActivity">
+            android:parentActivityName=".DefaultPageActivity"
+            >
 
         </activity>
         <activity

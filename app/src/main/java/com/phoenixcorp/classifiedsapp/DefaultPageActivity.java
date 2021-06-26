@@ -47,7 +47,7 @@ public class DefaultPageActivity extends AppCompatActivity {
                 selectedFragment=new HomeFragment();
                 break;
             case R.id.search:
-                selectedFragment=new SearchFragment();
+                selectedFragment=new MyAdsFragment();
                 break;
             case R.id.blog:
                 selectedFragment=new ChatFragment();

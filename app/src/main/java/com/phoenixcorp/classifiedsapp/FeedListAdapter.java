@@ -5,19 +5,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
+
+import io.grpc.internal.KeepAliveManager;
 
 public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedListViewHolder> {
     ArrayList<String> products;
@@ -26,12 +35,13 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
     ArrayList<String> DocumentID;
     ArrayList<String> location;
 
+    HashMap<String,Boolean> likedPosts;
     HashMap<String,String> names;
     HashMap<String,String> imageURLs;
 
     Fragment homeFragment;
 
-    public FeedListAdapter(ArrayList<String>products, ArrayList<String> prices, HashMap<String,String> imageURLs, ArrayList<String> UIDs, ArrayList<String> location , HashMap<String,String> names, HomeFragment homeFragment, ArrayList<String> DocumentID) {
+    public FeedListAdapter(ArrayList<String>products, ArrayList<String> prices, HashMap<String,String> imageURLs, ArrayList<String> UIDs, ArrayList<String> location , HashMap<String,String> names, HomeFragment homeFragment, ArrayList<String> DocumentID,HashMap<String,Boolean> likedPosts) {
 
         this.products=products;
         this.prices=prices;
@@ -41,6 +51,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
         this.homeFragment=homeFragment;
         this.DocumentID = DocumentID;
         this.location=location;
+        this.likedPosts= likedPosts;
     }
 
     @NonNull
@@ -75,6 +86,43 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
             homeFragment.startActivity(intent);
         });
 
+        FirebaseFirestore db=FirebaseFirestore.getInstance();
+        final String currentUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
+        holder.likeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(holder.likeBtn.isChecked()){
+                    HashMap<String,String> docIDset=new HashMap();
+                    docIDset.put("docID",docID);
+                    db.collection("users").document(currentUser).collection("liked posts").document(docID).set(docIDset).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                           if(task.isSuccessful()){
+                               Toast.makeText(homeFragment.getActivity(),"Added to Liked Post",Toast.LENGTH_SHORT).show();
+                           }else{
+                               Toast.makeText(homeFragment.getActivity(),"Couldn't add to like post",Toast.LENGTH_LONG).show();
+                           }
+                        }
+                    });
+                }else{
+                    db.collection("users/"+currentUser+"/liked posts").document(docID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Toast.makeText(homeFragment.getActivity(),"Unliked!",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+
+        if(likedPosts.get(docID)!=null && likedPosts.get(docID)){
+            holder.likeBtn.setChecked(true);
+        }
+
 
     }
 
@@ -83,13 +131,14 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
         return products.size();
     }
 
-    public class FeedListViewHolder extends RecyclerView.ViewHolder{
+    public static class FeedListViewHolder extends RecyclerView.ViewHolder{
 
         TextView productName;
         TextView price;
         TextView location;
         ImageView feedImage;
         CardView productCard;
+        CheckBox likeBtn;
 
 
         public FeedListViewHolder(@NonNull View itemView) {
@@ -99,6 +148,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
             feedImage=itemView.findViewById(R.id.feedImage);
             productCard= itemView.findViewById(R.id.productCard);
             location=itemView.findViewById(R.id.locationTextView);
+            likeBtn=itemView.findViewById(R.id.likeBtn);
 
         }
     }

@@ -100,7 +100,7 @@ public class NewPostActivity extends AppCompatActivity {
         FirebaseFirestore db=FirebaseFirestore.getInstance();
 
 
-        final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
         ProgressDialog pd= new ProgressDialog(this);
@@ -115,7 +115,7 @@ public class NewPostActivity extends AppCompatActivity {
             String locationVal=location.getText().toString();
 
             final String timeStamp=Long.toString(System.currentTimeMillis());
-            final String documentID=timeStamp+uid;
+            final String documentID=timeStamp+currentUser;
 
             if(images.isEmpty()){
 
@@ -142,8 +142,8 @@ public class NewPostActivity extends AppCompatActivity {
                     return;
                 }
                 else{
-                    uploadImages(db,pd,documentID);
-                    uploadData(productNameVal,productDescriptionVal,priceVal,locationVal,db,pd,documentID,uid);
+                    uploadImages(db,pd,documentID,currentUser);
+                    uploadData(productNameVal,productDescriptionVal,priceVal,locationVal,db,pd,documentID,currentUser);
 
                 }
             }
@@ -155,12 +155,10 @@ public class NewPostActivity extends AppCompatActivity {
 
     }
 
-    private void uploadImages(FirebaseFirestore db, ProgressDialog pd,String documentID) {
+    private void uploadImages(FirebaseFirestore db, ProgressDialog pd,String documentID,String currentUser) {
 
         pd.setMessage("Uploading Images");
         pd.show();
-
-
 
         StorageReference ImageFolder= FirebaseStorage.getInstance().getReference().child("Images");
 
@@ -199,6 +197,15 @@ public class NewPostActivity extends AppCompatActivity {
                             });
 
 
+                            db.collection("users").document(currentUser).collection("my posts").document(documentID).collection("urls").add(urlSet).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentReference> task) {
+                                    if(task.isSuccessful()){
+                                        Toast.makeText(NewPostActivity.this,"Images added to my posts",Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+
                         }
                     });
                 }
@@ -209,7 +216,7 @@ public class NewPostActivity extends AppCompatActivity {
 
     }
 
-    void uploadData(String productNameVal,String productDescriptionVal, String priceVal,String locationVal,FirebaseFirestore db,ProgressDialog pd,String documentID,String uid){
+    void uploadData(String productNameVal,String productDescriptionVal, String priceVal,String locationVal,FirebaseFirestore db,ProgressDialog pd,String documentID,String currentUser){
 
 
         Map<String,Object> postData=new HashMap<>();
@@ -217,20 +224,32 @@ public class NewPostActivity extends AppCompatActivity {
         postData.put("productDescription",productDescriptionVal);
         postData.put("price",priceVal);
         postData.put("location",locationVal);
-        postData.put("UID",uid);
+        postData.put("UID",currentUser);
 
 
         db.collection("posts").document(documentID).set(postData).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(NewPostActivity.this,"Data Posted",Toast.LENGTH_LONG).show();
+                    Toast.makeText(NewPostActivity.this,"Data Posted",Toast.LENGTH_SHORT).show();
 
                 }else{
                     Toast.makeText(NewPostActivity.this,"Couldn't post."+ Objects.requireNonNull(task.getException()).getMessage(),Toast.LENGTH_LONG).show();
                 }
             }
         });
+
+
+        db.collection("users").document(currentUser).collection("my posts").document(documentID).set(postData).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(NewPostActivity.this,"Added to my posts",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
     }
 
     private void adapterHandler(ArrayList<Uri> images) {

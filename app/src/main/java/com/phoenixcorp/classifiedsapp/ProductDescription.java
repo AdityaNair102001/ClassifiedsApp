@@ -50,7 +50,7 @@ public class ProductDescription extends AppCompatActivity {
 
     ArrayList<String> images;
     ArrayList<String> reverseImages;
-    SliderView sliderView;
+
     TextView productNameView, productPriceView, productDescriptionView, productLocationView, sellerNameView;
     LinearLayout callButton, chatButton;
     CircleImageView sellerImageView;

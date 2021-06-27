@@ -92,8 +92,8 @@ public class ChatFragment extends Fragment {
     TextView exploreBtn;
     LinearLayout emptyChatLayout;
     CircularProgressIndicator progressBar;
-    Users tempUser;
 
+    ArrayList<String> docID;
     ArrayList<Users> usersArrayList;
 
     ChatListAdapter adapter;
@@ -108,6 +108,7 @@ public class ChatFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         usersArrayList = new ArrayList<>();
+        docID = new ArrayList<>();
 
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
@@ -145,10 +146,11 @@ public class ChatFragment extends Fragment {
                                 if(!queryDocumentSnapshots.isEmpty()) {
                                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                                         Users users = new Users(documentSnapshot.getId(), documentSnapshot.getString("receiverName"), "generic@gmail.com", documentSnapshot.getString("imageURI"), "7359102080");
-                                        tempUser = users;
                                         Log.d("onSuccess : ", users.userName);
-                                        if(!usersArrayList.contains(users))
+                                        if(!usersArrayList.contains(users)) {
                                             usersArrayList.add(users);
+                                            docID.add(documentSnapshot.getId());
+                                        }
                                     }
                                     firestore.collection("chats").document(auth.getUid()).collection("messages received from").
                                             get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -157,13 +159,12 @@ public class ChatFragment extends Fragment {
                                             if (!queryDocumentSnapshots.isEmpty()) {
                                                 for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
                                                     Users users = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080");
-//                                                    if(usersArrayList.contains(tempUser)) usersArrayList.remove(tempUser);
-                                                    if (!usersArrayList.contains(tempUser)) {
+                                                    if (!docID.contains(queryDocumentSnapshot.getId())) {
                                                         usersArrayList.add(users);
                                                     }
                                                 }
-                                                progressBar.setVisibility(View.GONE);
                                                 adapter.notifyDataSetChanged();
+                                                progressBar.setVisibility(View.GONE);
                                             }
                                             else{
                                                 adapter.notifyDataSetChanged();

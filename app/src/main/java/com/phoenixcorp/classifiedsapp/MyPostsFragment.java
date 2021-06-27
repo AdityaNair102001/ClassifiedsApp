@@ -1,7 +1,5 @@
 package com.phoenixcorp.classifiedsapp;
 
-import android.accessibilityservice.GestureDescription;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -85,7 +82,7 @@ public class MyPostsFragment extends Fragment {
         View view=inflater.inflate(R.layout.fragment_my_posts, container, false);
 
         myPostList=view.findViewById(R.id.myPosts);
-        pd=view.findViewById(R.id.progressBarPosts);
+        pd=view.findViewById(R.id.progressBarMyPosts);
 
         pd.setVisibility(View.INVISIBLE);
 
@@ -96,6 +93,7 @@ public class MyPostsFragment extends Fragment {
         ArrayList<String> documentID = new ArrayList<>();
 
         HashMap<String, String> imageUrlsFromDB=new HashMap<>();
+        HashMap<String,Boolean> likedPostsFromDB = new HashMap<>();
 
         String[] names={"Aaloo","Bhujia","Vada","Dosa","Chamanti","Porota"};
 
@@ -120,7 +118,7 @@ public class MyPostsFragment extends Fragment {
                                         List<DocumentSnapshot> documentList=task.getResult().getDocuments();
                                         imageUrlsFromDB.put(documentSnapshot.getId(),documentList.get(documentList.size()-1).getString("url"));
 
-                                        adapterHandler(productNamesFromDB,productDescriptionFromDB,pricesFromDB,locationFromDB,imageUrlsFromDB,documentID);
+                                        adapterHandler(productNamesFromDB,productDescriptionFromDB,pricesFromDB,locationFromDB,imageUrlsFromDB,documentID,likedPostsFromDB);
                                 }
                             }
                         });
@@ -130,13 +128,12 @@ public class MyPostsFragment extends Fragment {
             }
         });
 
-
         return view;
     }
 
-    void adapterHandler(ArrayList<String> productNames,ArrayList<String>productDescription,ArrayList<String>prices,ArrayList<String>locations,HashMap<String,String>imageUrls,ArrayList<String>documentID){
+    void adapterHandler(ArrayList<String> productNames,ArrayList<String>productDescription,ArrayList<String>prices,ArrayList<String>locations,HashMap<String,String>imageUrls,ArrayList<String>documentID,HashMap<String,Boolean> likedPosts){
 
-        MyPostListAdapter adapter=new MyPostListAdapter(productNames,productDescription,prices,locations,imageUrls,documentID);
+        MyPostListAdapter adapter=new MyPostListAdapter(productNames,productDescription,prices,locations,imageUrls,documentID,likedPosts);
         myPostList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false));
         myPostList.setAdapter(adapter);
     }

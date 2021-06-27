@@ -84,7 +84,7 @@ public class HomeFragment extends Fragment {
         View view=inflater.inflate(R.layout.fragment_home,container,false);
 
         RecyclerView feed=view.findViewById(R.id.myPosts);
-        CircularProgressIndicator progressBar=view.findViewById(R.id.progressBarPosts);
+        CircularProgressIndicator progressBar=view.findViewById(R.id.progressBarMyPosts);
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -95,6 +95,7 @@ public class HomeFragment extends Fragment {
         ArrayList<String> UIDFromDB=new ArrayList<>();
         ArrayList<String> documentID = new ArrayList<>();
         ArrayList<String> location=new ArrayList<>();
+        ArrayList<String> productDescriptionsFromDB=new ArrayList<>();
         ArrayList<String> myAds=new ArrayList<>();
 
         HashMap<String,Boolean> likedPostsFromDB = new HashMap<>();
@@ -119,6 +120,7 @@ public class HomeFragment extends Fragment {
                             UIDFromDB.add(document.getString("UID"));
                             documentID.add(document.getId());
                             location.add(document.getString("location"));
+                            productDescriptionsFromDB.add(document.getString("productDescription"));
 
                             db.collection("posts/"+document.getId()+"/urls").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
@@ -128,7 +130,7 @@ public class HomeFragment extends Fragment {
 
                                     imageURLFromDB.put(document.getId(),documentList.get(documentList.size()-1).getString("url"));
 
-                                    adapterHandler(productsFromDB,priceFromDB,imageURLFromDB,UIDFromDB,location,names,feed,progressBar,documentID,likedPostsFromDB);
+                                    adapterHandler(productsFromDB,priceFromDB,imageURLFromDB,UIDFromDB,location,names,feed,progressBar,documentID,likedPostsFromDB,productDescriptionsFromDB);
 
                                     feed.setHasFixedSize(true);
 
@@ -182,9 +184,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void adapterHandler(ArrayList<String> products,ArrayList<String> prices, HashMap<String,String> imagesURLs, ArrayList<String> UIDs,
-                                ArrayList<String> location, HashMap<String,String> names,RecyclerView feed,CircularProgressIndicator progressBar,ArrayList<String> documentID,HashMap<String,Boolean> likedPosts) {
+                                ArrayList<String> location, HashMap<String,String> names,RecyclerView feed,CircularProgressIndicator progressBar,ArrayList<String> documentID,HashMap<String,Boolean> likedPosts,ArrayList<String>productDescriptions) {
 
-        FeedListAdapter adapter=new FeedListAdapter(products,prices,imagesURLs,UIDs,location,names,this,documentID,likedPosts);
+        FeedListAdapter adapter=new FeedListAdapter(products,prices,imagesURLs,UIDs,location,names,this,documentID,likedPosts,productDescriptions);
 
         if(imagesURLs.size()!=products.size() && names.size()!=products.size()){
             return;
@@ -195,6 +197,7 @@ public class HomeFragment extends Fragment {
             Collections.reverse(UIDs);
             Collections.reverse(location);
             Collections.reverse(documentID);
+            Collections.reverse(productDescriptions);
 
             progressBar.setVisibility(View.INVISIBLE);
             feed.setLayoutManager(new GridLayoutManager(this.getContext(),2));

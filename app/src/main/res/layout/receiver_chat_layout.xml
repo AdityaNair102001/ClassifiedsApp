@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:text="Today 6:25 PM"
             android:layout_gravity="right"
-            android:textSize="12sp"
+            android:textSize="10sp"
             android:paddingTop="2dp"
             android:paddingLeft="3dp"
             android:paddingRight="3dp"

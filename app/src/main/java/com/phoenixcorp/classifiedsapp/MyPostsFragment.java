@@ -133,7 +133,7 @@ public class MyPostsFragment extends Fragment {
 
     void adapterHandler(ArrayList<String> productNames,ArrayList<String>productDescription,ArrayList<String>prices,ArrayList<String>locations,HashMap<String,String>imageUrls,ArrayList<String>documentID,HashMap<String,Boolean> likedPosts){
 
-        MyPostListAdapter adapter=new MyPostListAdapter(productNames,productDescription,prices,locations,imageUrls,documentID,likedPosts);
+        MyPostListAdapter adapter=new MyPostListAdapter(productNames,productDescription,prices,locations,imageUrls,documentID,likedPosts, this);
         myPostList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false));
         myPostList.setAdapter(adapter);
     }

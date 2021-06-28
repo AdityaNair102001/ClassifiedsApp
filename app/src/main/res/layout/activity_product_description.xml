@@ -116,9 +116,9 @@
                 android:id="@+id/desc_product_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/product_desc_box"
+                android:background="#FF4F4F"
                 android:paddingTop="10dp"
-                android:textColor="@color/grey"
+                android:textColor="@color/black"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:paddingLeft="7dp"
@@ -126,6 +126,9 @@
                 android:paddingBottom="10dp"
                 android:text=""
                 android:textSize="17dp"/>
+
+<!--            android:background="@drawable/product_desc_box"-->
+<!--            #FFE3E3-->
 
             <TextView
                 android:layout_width="match_parent"
@@ -152,7 +155,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#F3C2C2">
+                    android:background="#FF4F4F">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/desc_product_sellerImg"

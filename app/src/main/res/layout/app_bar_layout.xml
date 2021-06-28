@@ -13,7 +13,7 @@
         android:fontFamily="@font/dancingscriptvariablefontwght"
         android:text="Classifieds"
         android:textAlignment="center"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="38sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

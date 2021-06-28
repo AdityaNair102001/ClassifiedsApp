@@ -1,20 +1,29 @@
 package com.phoenixcorp.classifiedsapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class MyPostListAdapter extends RecyclerView.Adapter<MyPostListAdapter.MyPostListViewHolder> {
 
@@ -53,6 +62,9 @@ public class MyPostListAdapter extends RecyclerView.Adapter<MyPostListAdapter.My
         holder.location.setText(locations.get(position));
         Picasso.get().load(imageUrls.get(documentID.get(position))).placeholder(R.drawable.loader).into(holder.postImage);
 
+        FirebaseFirestore db=FirebaseFirestore.getInstance();
+        final String currentUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,6 +75,55 @@ public class MyPostListAdapter extends RecyclerView.Adapter<MyPostListAdapter.My
                 intent.putExtra("Product Location", locations.get(position));
                 myPostsFragment.startActivity(intent);
             }
+        });
+
+
+        holder.deleteBtn.setOnClickListener(v -> {
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(myPostsFragment.getContext());
+            builder.setTitle("Delete Post");
+            builder.setMessage("Are you sure");
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    db.collection("users/"+currentUser+"/my posts").document(documentID.get(position)).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Toast.makeText(myPostsFragment.getContext(),"Deleted from my posts",Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+
+                    db.collection("posts").document(documentID.get(position)).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Toast.makeText(myPostsFragment.getContext(),"Deleted from my posts",Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+
+                    productNames.remove(position);
+                    productDescriptions.remove(position);
+                    prices.remove(position);
+                    imageUrls.remove(documentID.get(position));
+                    documentID.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position,productNames.size());
+
+
+                }
+            });
+            builder.show();
         });
 
     }
@@ -79,7 +140,7 @@ public class MyPostListAdapter extends RecyclerView.Adapter<MyPostListAdapter.My
         TextView location;
 
         ImageView postImage;
-        CheckBox likeBtn;
+        Button deleteBtn;
 
         public MyPostListViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -87,6 +148,7 @@ public class MyPostListAdapter extends RecyclerView.Adapter<MyPostListAdapter.My
             price=itemView.findViewById(R.id.myPostPrice);
             location=itemView.findViewById(R.id.myPostLocation);
             postImage=itemView.findViewById(R.id.myPostImage);
+            deleteBtn=itemView.findViewById(R.id.myPostDelete);
 
         }
     }

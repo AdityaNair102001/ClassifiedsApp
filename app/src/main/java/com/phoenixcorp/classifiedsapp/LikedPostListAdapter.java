@@ -89,8 +89,13 @@ public class LikedPostListAdapter extends RecyclerView.Adapter<LikedPostListAdap
                             if (task.isSuccessful()) {
                                 Toast.makeText(likedPostsFragment.getActivity(), "Unliked!", Toast.LENGTH_SHORT).show();
                                 productNames.remove(position);
+                                productDescriptions.remove(position);
+                                prices.remove(position);
+                                imageUrls.remove(docID);
+                                documentID.remove(position);
                                 notifyItemRemoved(position);
                                 notifyItemRangeChanged(position,productNames.size());
+
 
                                 if(productNames.isEmpty()){
 

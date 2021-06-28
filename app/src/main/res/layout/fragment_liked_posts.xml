@@ -14,6 +14,44 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
+    <LinearLayout
+        android:id="@+id/noLikes"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:padding="35dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:src="@drawable/nolikeditems"
+            android:layout_gravity="center"
+            app:tint="@color/colorPrimary"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You have not liked any ads yet!"
+            android:textSize="16dp"
+            android:textAlignment="center"
+            android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/noLikes_explore_ads_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Explore Ads"
+            android:textSize="25dp"
+            android:textColor="@color/white"
+            android:background="@drawable/explore_button"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:padding="5dp"/>
+
+
+    </LinearLayout>
+
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBarLikedPosts"
         android:layout_width="wrap_content"

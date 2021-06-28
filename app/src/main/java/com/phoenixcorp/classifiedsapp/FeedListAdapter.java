@@ -109,7 +109,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                            if(task.isSuccessful()){
-                               Toast.makeText(homeFragment.getActivity(),"Added to Liked Post",Toast.LENGTH_SHORT).show();
+//                               Toast.makeText(homeFragment.getActivity(),"Added to Liked Post",Toast.LENGTH_SHORT).show();
 
                                HashMap<String,String> likedPostUrlSet=new HashMap();
                                likedPostUrlSet.put("url",url);
@@ -118,7 +118,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
                                    @Override
                                    public void onComplete(@NonNull Task<DocumentReference> task) {
                                         if(task.isSuccessful()){
-                                            Toast.makeText(homeFragment.getActivity(),"Images added to Liked Post",Toast.LENGTH_SHORT).show();
+//                                            Toast.makeText(homeFragment.getActivity(),"Images added to Liked Post",Toast.LENGTH_SHORT).show();
                                         }
                                    }
                                });
@@ -134,7 +134,7 @@ public class FeedListAdapter extends RecyclerView.Adapter<FeedListAdapter.FeedLi
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                Toast.makeText(homeFragment.getActivity(),"Unliked!",Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(homeFragment.getActivity(),"Unliked!",Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

@@ -71,7 +71,7 @@
             </TextView>
 
             <Button
-                android:id="@+id/delete"
+                android:id="@+id/myPostDelete"
                 android:layout_width="56dp"
                 android:layout_height="51dp"
                 android:layout_marginTop="4dp"

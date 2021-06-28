@@ -1,5 +1,6 @@
 package com.phoenixcorp.classifiedsapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,10 +12,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.api.Distribution;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -75,6 +80,9 @@ public class LikedPostsFragment extends Fragment {
     RecyclerView likedPostList;
     CircularProgressIndicator pd;
 
+    LinearLayout noLikesLayout;
+    TextView exploreAds;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,6 +101,9 @@ public class LikedPostsFragment extends Fragment {
 
         likedPostList=view.findViewById(R.id.likedPosts);
         pd=view.findViewById(R.id.progressBarLikedPosts);
+
+        noLikesLayout = view.findViewById(R.id.noLikes);
+        exploreAds = view.findViewById(R.id.noLikes_explore_ads_button);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final String currentUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
@@ -120,9 +131,17 @@ public class LikedPostsFragment extends Fragment {
                            }
                        });
 
-
-
-
+                   }
+                   if(documentIDFromDB.isEmpty()){
+//                       Toast.makeText(getContext(),"No favorites yet", Toast.LENGTH_SHORT).show();
+                       noLikesLayout.setVisibility(View.VISIBLE);
+                       exploreAds.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View view) {
+                               startActivity(new Intent(getContext(), DefaultPageActivity.class));
+                           }
+                       });
+                       pd.setVisibility(View.GONE);
                    }
 
                 }
@@ -140,12 +159,6 @@ public class LikedPostsFragment extends Fragment {
                 }
             }
         });
-
-
-
-
-
-
 
         return view;
     }

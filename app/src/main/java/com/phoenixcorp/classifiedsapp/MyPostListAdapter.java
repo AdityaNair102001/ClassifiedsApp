@@ -1,5 +1,6 @@
 package com.phoenixcorp.classifiedsapp;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,9 @@ public class MyPostListAdapter extends RecyclerView.Adapter<MyPostListAdapter.My
     HashMap<String, String> imageUrls;
     HashMap<String,Boolean> likedPosts;
 
+    MyPostsFragment myPostsFragment;
 
-    public MyPostListAdapter(ArrayList<String> productNames,ArrayList<String>prices,ArrayList<String>productDescriptions,ArrayList<String>locations,HashMap<String,String>imageUrls,ArrayList<String>documentID,HashMap<String,Boolean> likedPosts){
+    public MyPostListAdapter(ArrayList<String> productNames,ArrayList<String>productDescriptions,ArrayList<String>prices,ArrayList<String>locations,HashMap<String,String>imageUrls,ArrayList<String>documentID,HashMap<String,Boolean> likedPosts, MyPostsFragment myPostsFragment){
         this.productNames=productNames;
         this.prices=prices;
         this.productDescriptions=productDescriptions;
@@ -35,6 +37,7 @@ public class MyPostListAdapter extends RecyclerView.Adapter<MyPostListAdapter.My
         this.imageUrls=imageUrls;
         this.documentID=documentID;
         this.likedPosts=likedPosts;
+        this.myPostsFragment = myPostsFragment;
     }
 
     public MyPostListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -46,12 +49,21 @@ public class MyPostListAdapter extends RecyclerView.Adapter<MyPostListAdapter.My
     @Override
     public void onBindViewHolder(@NonNull MyPostListViewHolder holder, int position) {
         holder.productName.setText(productNames.get(position));
-        holder.price.setText(prices.get(position));
+        holder.price.setText("₹"+prices.get(position));
         holder.location.setText(locations.get(position));
         Picasso.get().load(imageUrls.get(documentID.get(position))).placeholder(R.drawable.loader).into(holder.postImage);
 
-
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(myPostsFragment.getContext(), MyAdsProductDescriptionActivity.class);
+                intent.putExtra("Product Name", productNames.get(position));
+                intent.putExtra("Product Price", "₹"+prices.get(position));
+                intent.putExtra("Document ID", documentID.get(position));
+                intent.putExtra("Product Location", locations.get(position));
+                myPostsFragment.startActivity(intent);
+            }
+        });
 
     }
 

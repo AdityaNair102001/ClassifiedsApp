@@ -34,7 +34,7 @@
         app:boxCornerRadiusTopEnd="30dp"
         app:boxCornerRadiusTopStart="30dp"
         app:boxStrokeColor="@color/colorPrimary"
-        app:hintTextColor="#E8768D"
+        app:hintTextColor="#9EA7FF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Username_S">
@@ -62,7 +62,7 @@
         app:boxCornerRadiusTopEnd="30dp"
         app:boxCornerRadiusTopStart="30dp"
         app:boxStrokeColor="@color/colorPrimary"
-        app:hintTextColor="#E8768D"
+        app:hintTextColor="#9EA7FF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Signup_text">
@@ -90,7 +90,7 @@
         app:boxCornerRadiusTopEnd="30dp"
         app:boxCornerRadiusTopStart="30dp"
         app:boxStrokeColor="@color/colorPrimary"
-        app:hintTextColor="#E8768D"
+        app:hintTextColor="#9EA7FF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Email_S">
@@ -119,7 +119,7 @@
         app:boxCornerRadiusTopEnd="30dp"
         app:boxCornerRadiusTopStart="30dp"
         app:boxStrokeColor="@color/colorPrimary"
-        app:hintTextColor="#E8768D"
+        app:hintTextColor="#9EA7FF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Password_S">
@@ -141,7 +141,7 @@
         android:layout_width="150dp"
         android:layout_height="54dp"
         android:text="Sign up"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="18sp"
         app:backgroundTint="@color/colorPrimary"
         app:cornerRadius="25dp"
@@ -161,7 +161,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="72dp"
         android:text="Already have an account?"
-        android:textColor="@color/colorPrimaryVariant"
+        android:textColor="#9EA7FF"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

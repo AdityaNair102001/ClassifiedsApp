@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyAdsProductDescriptionActivity">
+    tools:context=".MyAdsProductDescriptionActivity"
+    android:background="@color/white">
 
 
     <LinearLayout
@@ -32,8 +33,8 @@
                 app:sliderIndicatorOrientation="horizontal"
                 app:sliderIndicatorPadding="3dp"
                 app:sliderIndicatorRadius="2dp"
-                app:sliderIndicatorSelectedColor="#DF5858"
-                app:sliderIndicatorUnselectedColor="#EAAFAF"
+                app:sliderIndicatorSelectedColor="@color/colorPrimary"
+                app:sliderIndicatorUnselectedColor="#E0E3FF"
                 app:sliderScrollTimeInSec="1" />
 
         </androidx.cardview.widget.CardView>
@@ -109,7 +110,7 @@
             android:id="@+id/MyAds_productDesc_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/product_desc_box"
+            android:background="#E0E3FF"
             android:paddingTop="10dp"
             android:textColor="@color/grey"
             android:layout_marginLeft="16dp"

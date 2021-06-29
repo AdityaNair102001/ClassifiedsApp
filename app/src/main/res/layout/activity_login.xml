@@ -38,7 +38,7 @@
         app:boxCornerRadiusTopEnd="30dp"
         app:boxCornerRadiusTopStart="30dp"
         app:boxStrokeColor="@color/colorPrimary"
-        app:hintTextColor="#E8768D"
+        app:hintTextColor="#9EA7FF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Title">
@@ -67,7 +67,7 @@
         app:boxCornerRadiusBottomStart="30dp"
         app:boxCornerRadiusTopEnd="30dp"
         app:boxCornerRadiusTopStart="30dp"
-        app:hintTextColor="#E8768D"
+        app:hintTextColor="#9EA7FF"
         app:layout_constraintEnd_toEndOf="@+id/Email_L"
         app:layout_constraintStart_toStartOf="@+id/Email_L"
         app:layout_constraintTop_toBottomOf="@+id/Email_L"
@@ -118,11 +118,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="108dp"
         android:text="Don't have an account?"
-        android:textColor="@color/colorPrimaryVariant"
+        android:textColor="#9EA7FF"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Login" />
 
 

@@ -39,8 +39,8 @@
                     app:sliderIndicatorOrientation="horizontal"
                     app:sliderIndicatorPadding="3dp"
                     app:sliderIndicatorRadius="2dp"
-                    app:sliderIndicatorSelectedColor="#DF5858"
-                    app:sliderIndicatorUnselectedColor="#EAAFAF"
+                    app:sliderIndicatorSelectedColor="@color/colorPrimary"
+                    app:sliderIndicatorUnselectedColor="#E0E3FF"
                     app:sliderScrollTimeInSec="1" />
 
             </androidx.cardview.widget.CardView>
@@ -116,7 +116,7 @@
                 android:id="@+id/desc_product_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FF4F4F"
+                android:background="#E0E3FF"
                 android:paddingTop="10dp"
                 android:textColor="@color/black"
                 android:layout_marginLeft="16dp"
@@ -155,7 +155,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#FF4F4F">
+                    android:background="#E0E3FF">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/desc_product_sellerImg"
@@ -213,7 +213,7 @@
                 android:layout_width="27dp"
                 android:layout_height="27dp"
                 android:layout_gravity="center"
-                android:src="@drawable/chatimage"
+                android:src="@drawable/chat"
                 app:tint="@color/white"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -244,7 +244,7 @@
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/callimage"
+                android:src="@drawable/call"
                 app:tint="@color/white"/>
             <TextView
                 android:layout_width="wrap_content"

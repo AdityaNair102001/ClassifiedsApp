@@ -1,7 +1,9 @@
 package com.phoenixcorp.classifiedsapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
@@ -67,6 +69,15 @@ public class MyAdsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                startActivity(new Intent(getContext(), DefaultPageActivity.class));
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(callback);
+
+
         View view=inflater.inflate(R.layout.fragment_my_ads, container, false);
         tabLayout=view.findViewById(R.id.myAdsTabLayout);
         viewPager2=view.findViewById(R.id.myAdsViewPager);

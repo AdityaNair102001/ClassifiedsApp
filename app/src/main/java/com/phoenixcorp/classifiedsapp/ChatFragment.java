@@ -1,22 +1,21 @@
 package com.phoenixcorp.classifiedsapp;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -103,6 +102,13 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                startActivity(new Intent(getContext(), DefaultPageActivity.class));
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(callback);
 
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -210,5 +216,6 @@ public class ChatFragment extends Fragment {
         return view;
 
     }
+
 
 }

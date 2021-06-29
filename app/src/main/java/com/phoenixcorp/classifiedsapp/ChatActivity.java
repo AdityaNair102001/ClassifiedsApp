@@ -5,13 +5,17 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.collection.CircularArray;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.OnLifecycleEvent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -245,5 +249,17 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        firestore.collection("users").document(firebaseAuth.getUid()).update("Chatting with", "");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        firestore.collection("users").document(firebaseAuth.getUid()).update("Chatting with", receiverUID);
     }
 }

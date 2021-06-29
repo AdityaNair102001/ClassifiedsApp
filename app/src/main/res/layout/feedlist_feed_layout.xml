@@ -52,7 +52,7 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/like_btn_drawable"
                     android:button="@null"
-                    android:checked="false"></com.google.android.material.checkbox.MaterialCheckBox>
+                    android:checked="false" />
             </RelativeLayout>
 
 

@@ -47,7 +47,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@color/colorPrimary"
+        android:background="@color/colorPrimary"
         app:fabCradleMargin="20dp"
         app:fabCradleVerticalOffset="5dp"
         app:fabCradleRoundedCornerRadius="20dp">

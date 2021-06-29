@@ -14,9 +14,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="#FFE3E3"
+        android:background="#E0E3FF"
         app:tabTextColor="@color/black"
         app:tabSelectedTextColor="@color/colorPrimary"/>
+
+<!--    #FFE3D5-->
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/myAdsViewPager"

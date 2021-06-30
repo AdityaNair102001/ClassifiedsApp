@@ -6,15 +6,17 @@ public class Users {
     String userEmail;
     String phoneNo;
     String imageURI;
+    long timeStamp;
 
     public Users(){}
 
-    public Users(String uid, String userName, String userEmail,String imageURI, String phoneNo) {
+    public Users(String uid, String userName, String userEmail,String imageURI, String phoneNo, long timeStamp) {
         Uid = uid;
         this.userName = userName;
         this.userEmail = userEmail;
         this.imageURI = imageURI;
         this.phoneNo = phoneNo;
+        this.timeStamp = timeStamp;
     }
 
     public String getUid() {
@@ -51,5 +53,13 @@ public class Users {
 
     public void setImageURI(String imageURI) {
         this.imageURI = imageURI;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }

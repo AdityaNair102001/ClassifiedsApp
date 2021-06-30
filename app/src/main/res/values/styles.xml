@@ -5,4 +5,8 @@
         <item name="windowMinWidthMajor">80%</item>
         <item name="windowActionBar">false</item>
     </style>
+    <style name="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="color">@color/white</item>
+        <item name="android:background">@color/black</item>
+    </style>
 </resources>

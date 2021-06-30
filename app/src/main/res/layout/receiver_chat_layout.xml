@@ -15,11 +15,13 @@
         app:civ_border_color="@color/colorPrimary"/>
 
     <LinearLayout
+        android:id="@+id/receivedChat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/receiver_shape"
         android:layout_toRightOf="@+id/receiverProfile"
         android:layout_marginRight="5dp"
+        android:padding="2dp"
         android:layout_marginTop="10dp"
         android:orientation="vertical">
 
@@ -28,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ayo bitch!"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:maxWidth="210dp"
             android:textSize="18dp"
             android:paddingTop="2dp"
@@ -46,7 +48,7 @@
             android:paddingTop="2dp"
             android:paddingLeft="3dp"
             android:paddingRight="3dp"
-            android:textColor="#D3D3D3"/>
+            android:textColor="@color/grey"/>
 
     </LinearLayout>
 

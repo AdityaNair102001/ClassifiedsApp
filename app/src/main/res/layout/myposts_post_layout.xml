@@ -30,8 +30,8 @@
 
             <TextView
                 android:id="@+id/myPostProductName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="230dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-black"
@@ -57,18 +57,34 @@
 
             </TextView>
 
-            <TextView
-                android:id="@+id/myPostLocation"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:fontFamily="sans-serif-light"
-                android:text="location"
-                android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@+id/myPostPrice"
-                app:layout_constraintTop_toBottomOf="@+id/myPostPrice">
+                app:layout_constraintTop_toBottomOf="@+id/myPostPrice"
+                android:orientation="horizontal">
 
-            </TextView>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="15dp"
+                    android:src="@drawable/ic_baseline_location_on_24"
+                    app:tint="@color/colorPrimary"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="3dp"/>
+
+                <TextView
+                    android:id="@+id/myPostLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:fontFamily="sans-serif-light"
+                    android:text="location"
+                    android:textColor="@color/black">
+
+                </TextView>
+
+            </LinearLayout>
+
 
             <Button
                 android:id="@+id/myPostDelete"

@@ -1,23 +1,25 @@
 package com.phoenixcorp.classifiedsapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.collection.CircularArray;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.OnLifecycleEvent;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +31,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
@@ -56,25 +60,42 @@ public class ChatActivity extends AppCompatActivity {
     public static String senderImg;
     public static String receiverImg;
 
-    String senderRoom="", receiverRoom="";
-
     RecyclerView messageAdapter;
 
     CardView sendBtn;
     EditText chatMsg;
 
     ArrayList<Messages> messagesArrayList;
+    ArrayList <Messages> temp;
 
     MessageAdapter adapter;
 
     CircularProgressIndicator progressBar;
-    CircularProgressIndicator msgSending;
+
+    RelativeLayout relativeLayout;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        relativeLayout = findViewById(R.id.ChatActivityLayout);
+        relativeLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                relativeLayout.getWindowVisibleDisplayFrame(r);
+                int screenHeight = relativeLayout.getRootView().getHeight();
+                int keyPadHeight = screenHeight - r.bottom;
+                if(keyPadHeight > screenHeight * 0.15) {
+                    messageAdapter.smoothScrollToPosition(adapter.getItemCount());
+                }
+                else{
+                    messageAdapter.smoothScrollToPosition(adapter.getItemCount());
+                }
+            }
+        });
 
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -106,55 +127,49 @@ public class ChatActivity extends AppCompatActivity {
 
         senderUID = firebaseAuth.getCurrentUser().getUid();
 
-        senderRoom = senderUID + receiverUID;
-        receiverRoom = receiverUID + senderUID;
-
         messageAdapter = findViewById(R.id.messageAdapter);
         messagesArrayList = new ArrayList<Messages>();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
 
-        adapter = new MessageAdapter(ChatActivity.this, messagesArrayList);
         messageAdapter.setLayoutManager(linearLayoutManager);
+        adapter = new MessageAdapter(ChatActivity.this, messagesArrayList, receiverUID);
 
         messageAdapter.setAdapter(adapter);
 
         progressBar = findViewById(R.id.loadMsgs);
         progressBar.setVisibility(View.VISIBLE);
+        temp = new ArrayList<>();
 
-        msgSending = findViewById(R.id.sendingMsg);
 
         DocumentReference userReference = firestore.collection("users").document(firebaseAuth.getUid());
         CollectionReference chatSentReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages sent to").document(receiverUID).collection("messages");
         CollectionReference chatReceivedReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages received from").document(receiverUID).collection("messages");
 
-        chatSentReference.orderBy("timeStamp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        chatSentReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public synchronized void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if(!queryDocumentSnapshots.isEmpty()) {
-                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+            public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+                if(!value.isEmpty()){
+                    messagesArrayList.clear();
+                    for (QueryDocumentSnapshot documentSnapshot : value) {
                         Messages message = documentSnapshot.toObject(Messages.class);
-//                        if (!messagesArrayList.contains(message))
-                        messagesArrayList.add(message);
+                            messagesArrayList.add(message);
                     }
-
                 }
-                chatReceivedReference.orderBy("timeStamp").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
+                chatReceivedReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public synchronized void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if(!queryDocumentSnapshots.isEmpty()){
-                            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                    public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+                        if(!value.isEmpty()){
+                            messagesArrayList.removeAll(temp);
+                            temp.clear();
+                            for (QueryDocumentSnapshot documentSnapshot : value){
                                 Messages message = documentSnapshot.toObject(Messages.class);
-                                if (!messagesArrayList.contains(message)) {
-                                    messagesArrayList.add(message);
-                                }
+                                temp.add(message);
                             }
-//                    messagesArrayList.sort(Comparator.comparing(Messages::getTimeStamp));
+                            messagesArrayList.addAll(temp);
                             Collections.sort(messagesArrayList, Comparator.comparing(Messages::getTimeStamp));
                             adapter.notifyDataSetChanged();
-                            messageAdapter.smoothScrollToPosition(adapter.getItemCount());
                             progressBar.setVisibility(View.GONE);
                         }
                         else{
@@ -163,7 +178,6 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
             }
-
         });
 
         userReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -179,7 +193,6 @@ public class ChatActivity extends AppCompatActivity {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                msgSending.setVisibility(View.VISIBLE);
 
                 String chat = chatMsg.getText().toString().trim();
                 if(chat.isEmpty()){
@@ -203,12 +216,6 @@ public class ChatActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if(task.isSuccessful()) {
                             Toast.makeText(ChatActivity.this, "Message sent", Toast.LENGTH_SHORT).show();
-                            messagesArrayList.add(m);
-//                            messagesArrayList.sort(Comparator.comparing(Messages::getTimeStamp));
-                            Collections.sort(messagesArrayList, Comparator.comparing(Messages::getTimeStamp));
-                            adapter.notifyDataSetChanged();
-                            messageAdapter.smoothScrollToPosition(adapter.getItemCount());
-                            msgSending.setVisibility(View.GONE);
 
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("chat", chat);
@@ -232,7 +239,6 @@ public class ChatActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentReference> task) {
                                     if(task.isSuccessful()){
-
                                     }
                                     else{
                                         Toast.makeText(ChatActivity.this, "Error", Toast.LENGTH_SHORT).show();
@@ -249,17 +255,5 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        firestore.collection("users").document(firebaseAuth.getUid()).update("Chatting with", "");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        firestore.collection("users").document(firebaseAuth.getUid()).update("Chatting with", receiverUID);
     }
 }

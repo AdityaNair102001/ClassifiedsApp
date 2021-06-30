@@ -10,11 +10,13 @@
     <color name="grey">#696969</color>
     <color name="orange">#FF785B</color>
 
-    <color name="colorPrimary">#E81F10</color>
-    <color name="colorPrimaryVariant">#DD3629</color>
+    <color name="colorPrimary">#141932</color>
+    <color name="colorPrimaryVariant">#FF785B</color>
     <color name="gradEnd">#DA2EF8</color>
     <color name="gradStart">#E81F10</color>
     <color name="solidCircle">#AAFFFFFF</color>
     <color name="circleBorder">#50FFFFFF</color>
+    <color name="lightBlue">#E0E3FF</color>
+    <color name="lightBlueVariant">#9EA7FF</color>
 
 </resources>

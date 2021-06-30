@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".ChatActivity">
+    tools:context=".ChatActivity"
+    android:id="@+id/ChatActivityLayout">
 
     <LinearLayout
         android:id="@+id/ll1"
@@ -57,13 +58,14 @@
             android:overScrollMode="ifContentScrolls"
             app:cardCornerRadius="40dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="#F4A460">
+            app:cardBackgroundColor="#E0E3FF">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/chatMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:overScrollMode="ifContentScrolls"
                 android:hint="Type your message"
+                android:textColorHint="@color/grey"
                 android:layout_gravity="center"
                 android:textSize="20dp"
                 android:maxLines="5"

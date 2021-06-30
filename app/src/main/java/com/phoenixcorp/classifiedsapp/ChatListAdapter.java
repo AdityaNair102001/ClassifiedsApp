@@ -2,6 +2,7 @@ package com.phoenixcorp.classifiedsapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,11 +22,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> {
 
     private ArrayList<Users> names;
     Fragment chatFragment;
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public ChatListAdapter(ArrayList<Users> names, ChatFragment chatfrag)
     {
         this.names = names;

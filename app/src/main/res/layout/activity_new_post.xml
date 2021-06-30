@@ -35,8 +35,8 @@
                 app:sliderIndicatorOrientation="horizontal"
                 app:sliderIndicatorPadding="3dp"
                 app:sliderIndicatorRadius="2dp"
-                app:sliderIndicatorSelectedColor="#DF5858"
-                app:sliderIndicatorUnselectedColor="#EAAFAF"
+                app:sliderIndicatorSelectedColor="@color/colorPrimary"
+                app:sliderIndicatorUnselectedColor="#E0E3FF"
                 app:sliderScrollTimeInSec="1" />
 
         </androidx.cardview.widget.CardView>
@@ -51,7 +51,7 @@
             android:text="Select Images"
             app:layout_constraintStart_toStartOf="@id/constraintContainer"
             app:layout_constraintTop_toBottomOf="@id/slider"
-            app:strokeColor="@color/colorPrimaryVariant" />
+            app:strokeColor="@color/colorPrimary" />
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -89,7 +89,7 @@
             android:layout_marginEnd="8dp"
             android:hint="Product Description"
             android:textColorHint="@color/post_activity_edittext_color"
-            app:boxBackgroundColor="#F3C2C2"
+            app:boxBackgroundColor="#E0E3FF"
             app:boxStrokeColor="@color/post_activity_edittext_color"
             app:boxStrokeErrorColor="#ED1D1D"
             app:hintTextColor="@color/post_activity_edittext_color"

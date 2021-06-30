@@ -1,22 +1,24 @@
 package com.phoenixcorp.classifiedsapp;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.icu.text.UnicodeSetIterator;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +36,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -99,10 +103,18 @@ public class ChatFragment extends Fragment {
     ChatListAdapter adapter;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                startActivity(new Intent(getContext(), DefaultPageActivity.class));
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(callback);
 
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -138,6 +150,7 @@ public class ChatFragment extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot documentSnapshot = task.getResult();
                     if (documentSnapshot.exists()) {
+
                         CollectionReference ref = firestore.collection("chats").document(auth.getUid()).collection("messages sent to");
 
                         ref.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -145,8 +158,8 @@ public class ChatFragment extends Fragment {
                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                 if(!queryDocumentSnapshots.isEmpty()) {
                                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                        Users users = new Users(documentSnapshot.getId(), documentSnapshot.getString("receiverName"), "generic@gmail.com", documentSnapshot.getString("imageURI"), "7359102080");
-                                        Log.d("onSuccess : ", users.userName);
+                                        Users users = new Users(documentSnapshot.getId(), documentSnapshot.getString("receiverName"), "generic@gmail.com", documentSnapshot.getString("imageURI"), "7359102080", documentSnapshot.getLong("timeStamp"));
+                                        Log.d("onSuccess : ", String.valueOf(users.timeStamp));
                                         if(!usersArrayList.contains(users)) {
                                             usersArrayList.add(users);
                                             docID.add(documentSnapshot.getId());
@@ -158,7 +171,7 @@ public class ChatFragment extends Fragment {
                                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                             if (!queryDocumentSnapshots.isEmpty()) {
                                                 for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
-                                                    Users users = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080");
+                                                    Users users = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080", documentSnapshot.getLong("timeStamp"));
                                                     if (!docID.contains(queryDocumentSnapshot.getId())) {
                                                         usersArrayList.add(users);
                                                     }
@@ -181,7 +194,7 @@ public class ChatFragment extends Fragment {
                                         @Override
                                         public synchronized void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                             for(QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots){
-                                                Users uusers = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080");
+                                                Users uusers = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080", documentSnapshot.getLong("timeStamp"));
                                                 usersArrayList.add(uusers);
                                                 adapter.notifyDataSetChanged();
                                             }
@@ -210,5 +223,6 @@ public class ChatFragment extends Fragment {
         return view;
 
     }
+
 
 }

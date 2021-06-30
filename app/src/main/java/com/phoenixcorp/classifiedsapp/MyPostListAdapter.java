@@ -79,7 +79,7 @@ public class MyPostListAdapter extends RecyclerView.Adapter<MyPostListAdapter.My
 
 
         holder.deleteBtn.setOnClickListener(v -> {
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(myPostsFragment.getContext());
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(myPostsFragment.requireContext());
             builder.setTitle("Delete Post");
             builder.setMessage("Are you sure");
             builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

@@ -15,9 +15,10 @@
         app:civ_border_color="@color/colorPrimary"/>
 
     <LinearLayout
+        android:id="@+id/receivedChat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/chat_shape"
+        android:background="@drawable/receiver_shape"
         android:layout_toRightOf="@+id/receiverProfile"
         android:layout_marginRight="5dp"
         android:padding="2dp"

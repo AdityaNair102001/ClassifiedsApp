@@ -75,7 +75,7 @@
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="20dp"
-                android:src="@drawable/locationpin"
+                android:src="@drawable/ic_baseline_location_on_24"
                 android:layout_gravity="bottom"
                 android:layout_marginLeft="16dp"
                 app:tint="@color/colorPrimary"/>

@@ -15,10 +15,11 @@
         app:civ_border_color="@color/colorPrimary"/>
 
     <LinearLayout
+        android:id="@+id/sentChat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/senderProfile"
-        android:background="@drawable/chat_shape"
+        android:background="@drawable/sender_shape"
         android:orientation="vertical"
         android:padding="2dp"
         android:layout_marginTop="10dp"

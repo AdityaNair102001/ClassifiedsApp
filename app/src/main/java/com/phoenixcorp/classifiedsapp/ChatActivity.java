@@ -147,7 +147,7 @@ public class ChatActivity extends AppCompatActivity {
         CollectionReference chatSentReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages sent to").document(receiverUID).collection("messages");
         CollectionReference chatReceivedReference = firestore.collection("chats").document(firebaseAuth.getUid()).collection("messages received from").document(receiverUID).collection("messages");
 
-        chatSentReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        chatSentReference.orderBy("timeStamp").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
                 if(!value.isEmpty()){
@@ -157,7 +157,7 @@ public class ChatActivity extends AppCompatActivity {
                             messagesArrayList.add(message);
                     }
                 }
-                chatReceivedReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                chatReceivedReference.orderBy("timeStamp").addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
                         if(!value.isEmpty()){
@@ -215,10 +215,9 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if(task.isSuccessful()) {
-                            Toast.makeText(ChatActivity.this, "Message sent", Toast.LENGTH_SHORT).show();
-
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("chat", chat);
+                            long timeStamp = date.getTime();
                             if(buyerName!=null) {
                                 map.put("imageURI", buyerImage);
                                 map.put("senderName", buyerName);
@@ -227,7 +226,7 @@ public class ChatActivity extends AppCompatActivity {
                                 map.put("imageURI", senderImg);
                                 map.put("senderName", senderName);
                             }
-                            map.put("timeStamp", date.getTime());
+                            map.put("timeStamp", timeStamp);
                             map.put("senderID", firebaseAuth.getUid());
                             firestore.collection("chats").document(receiverUID).set(map);
                             firestore.collection("chats").document(receiverUID).collection("messages received from").document(senderUID).set(map);
@@ -239,6 +238,7 @@ public class ChatActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentReference> task) {
                                     if(task.isSuccessful()){
+                                        Toast.makeText(ChatActivity.this, "Message sent", Toast.LENGTH_SHORT).show();
                                     }
                                     else{
                                         Toast.makeText(ChatActivity.this, "Error", Toast.LENGTH_SHORT).show();

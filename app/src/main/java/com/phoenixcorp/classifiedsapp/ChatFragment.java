@@ -30,7 +30,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -99,6 +101,7 @@ public class ChatFragment extends Fragment {
 
     ArrayList<String> docID;
     ArrayList<Users> usersArrayList;
+    ArrayList<Users> temp;
 
     ChatListAdapter adapter;
 
@@ -120,6 +123,7 @@ public class ChatFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         usersArrayList = new ArrayList<>();
+        temp = new ArrayList<>();
         docID = new ArrayList<>();
 
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
@@ -143,77 +147,147 @@ public class ChatFragment extends Fragment {
 
         DocumentReference reference = firestore.collection("chats").document(auth.getUid());
 
-
-        reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        reference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public synchronized void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    if (documentSnapshot.exists()) {
+            public void onEvent(@Nullable @org.jetbrains.annotations.Nullable DocumentSnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+                if(value.exists()){
+                    emptyChatLayout.setVisibility(View.GONE);
+                    CollectionReference ref = firestore.collection("chats").document(auth.getUid()).collection("messages sent to");
 
-                        CollectionReference ref = firestore.collection("chats").document(auth.getUid()).collection("messages sent to");
-
-                        ref.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                if(!queryDocumentSnapshots.isEmpty()) {
-                                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                        Users users = new Users(documentSnapshot.getId(), documentSnapshot.getString("receiverName"), "generic@gmail.com", documentSnapshot.getString("imageURI"), "7359102080", documentSnapshot.getLong("timeStamp"));
-                                        Log.d("onSuccess : ", String.valueOf(users.timeStamp));
-                                        if(!usersArrayList.contains(users)) {
-                                            usersArrayList.add(users);
-                                            docID.add(documentSnapshot.getId());
-                                        }
+                    ref.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+                            if(!value.isEmpty()){
+                                usersArrayList.clear();
+                                for (QueryDocumentSnapshot documentSnapshot : value) {
+                                    Users users = new Users(documentSnapshot.getId(), documentSnapshot.getString("receiverName"), "generic@gmail.com", documentSnapshot.getString("imageURI"), "7359102080", documentSnapshot.getLong("timeStamp"));
+                                    Log.d("onSuccess : ", String.valueOf(users.timeStamp));
+                                    if(!usersArrayList.contains(users)) {
+                                        usersArrayList.add(users);
+                                        docID.add(documentSnapshot.getId());
                                     }
-                                    firestore.collection("chats").document(auth.getUid()).collection("messages received from").
-                                            get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                            if (!queryDocumentSnapshots.isEmpty()) {
-                                                for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
-                                                    Users users = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080", documentSnapshot.getLong("timeStamp"));
-                                                    if (!docID.contains(queryDocumentSnapshot.getId())) {
-                                                        usersArrayList.add(users);
-                                                    }
-                                                }
-                                                adapter.notifyDataSetChanged();
-                                                progressBar.setVisibility(View.GONE);
-                                            }
-                                            else{
-                                                adapter.notifyDataSetChanged();
-                                                progressBar.setVisibility(View.GONE);
-                                            }
-                                        }
-                                    });
                                 }
-                                else{
-                                    firestore.collection("chats").
-                                            document(auth.getUid()).
-                                            collection("messages received from").
-                                            get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                        @Override
-                                        public synchronized void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                            for(QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots){
-                                                Users uusers = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080", documentSnapshot.getLong("timeStamp"));
-                                                usersArrayList.add(uusers);
-                                                adapter.notifyDataSetChanged();
+                                firestore.collection("chats").document(auth.getUid()).collection("messages received from").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+                                        if(!value.isEmpty()){
+                                            usersArrayList.removeAll(temp);
+                                            temp.clear();
+                                            for (QueryDocumentSnapshot queryDocumentSnapshot : value) {
+                                                Users users = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080", queryDocumentSnapshot.getLong("timeStamp"));
+                                                if (!docID.contains(queryDocumentSnapshot.getId())) {
+                                                    temp.add(users);
+                                                }
                                             }
+                                            usersArrayList.addAll(temp);
+                                            adapter.notifyDataSetChanged();
                                             progressBar.setVisibility(View.GONE);
                                         }
-                                    });
-                                }
+                                        else{
+                                            adapter.notifyDataSetChanged();
+                                            progressBar.setVisibility(View.GONE);
+                                        }
+                                    }
+                                });
                             }
-                        });
-                    }
-                    else {
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "No Chats Yet!", Toast.LENGTH_SHORT).show();
-                        emptyChatLayout.setVisibility(View.VISIBLE);
-                    }
+                            else{
+                                firestore.collection("chats").
+                                        document(auth.getUid()).
+                                        collection("messages received from").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+                                        usersArrayList.clear();
+                                        for(QueryDocumentSnapshot queryDocumentSnapshot : value){
+                                            Users uusers = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080", queryDocumentSnapshot.getLong("timeStamp"));
+                                            usersArrayList.add(uusers);
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                });
+                            }
+                        }
+                    });
                 }
-
+                else {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "No Chats Yet!", Toast.LENGTH_SHORT).show();
+                    emptyChatLayout.setVisibility(View.VISIBLE);
+                }
             }
         });
+
+
+//        reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public synchronized void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot documentSnapshot = task.getResult();
+//                    if (documentSnapshot.exists()) {
+//
+//                        CollectionReference ref = firestore.collection("chats").document(auth.getUid()).collection("messages sent to");
+//
+//                        ref.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                            @Override
+//                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                                if(!queryDocumentSnapshots.isEmpty()) {
+//                                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+//                                        Users users = new Users(documentSnapshot.getId(), documentSnapshot.getString("receiverName"), "generic@gmail.com", documentSnapshot.getString("imageURI"), "7359102080", documentSnapshot.getLong("timeStamp"));
+//                                        Log.d("onSuccess : ", String.valueOf(users.timeStamp));
+//                                        if(!usersArrayList.contains(users)) {
+//                                            usersArrayList.add(users);
+//                                            docID.add(documentSnapshot.getId());
+//                                        }
+//                                    }
+//                                    firestore.collection("chats").document(auth.getUid()).collection("messages received from").
+//                                            get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                                        @Override
+//                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                                            if (!queryDocumentSnapshots.isEmpty()) {
+//                                                for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
+//                                                    Users users = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080", documentSnapshot.getLong("timeStamp"));
+//                                                    if (!docID.contains(queryDocumentSnapshot.getId())) {
+//                                                        usersArrayList.add(users);
+//                                                    }
+//                                                }
+//                                                adapter.notifyDataSetChanged();
+//                                                progressBar.setVisibility(View.GONE);
+//                                            }
+//                                            else{
+//                                                adapter.notifyDataSetChanged();
+//                                                progressBar.setVisibility(View.GONE);
+//                                            }
+//                                        }
+//                                    });
+//                                }
+//                                else{
+//                                    firestore.collection("chats").
+//                                            document(auth.getUid()).
+//                                            collection("messages received from").
+//                                            get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                                        @Override
+//                                        public synchronized void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                                            for(QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots){
+//                                                Users uusers = new Users(queryDocumentSnapshot.getId(), queryDocumentSnapshot.getString("senderName"), "generic@gmail.com", queryDocumentSnapshot.getString("imageURI"), "7359102080", documentSnapshot.getLong("timeStamp"));
+//                                                usersArrayList.add(uusers);
+//                                                adapter.notifyDataSetChanged();
+//                                            }
+//                                            progressBar.setVisibility(View.GONE);
+//                                        }
+//                                    });
+//                                }
+//                            }
+//                        });
+//                    }
+//                    else {
+//                        progressBar.setVisibility(View.GONE);
+//                        Toast.makeText(getContext(), "No Chats Yet!", Toast.LENGTH_SHORT).show();
+//                        emptyChatLayout.setVisibility(View.VISIBLE);
+//                    }
+//                }
+//
+//            }
+//        });
 
         ChatList.setHasFixedSize(true);
         ChatList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));

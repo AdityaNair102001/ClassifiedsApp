@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,7 +23,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -56,7 +59,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public MessageAdapter(Context context, ArrayList<Messages> messagesArrayList, String receiverUID) {
-        Collections.sort(messagesArrayList, Comparator.comparing(Messages::getTimeStamp));
+//        Collections.sort(messagesArrayList, Comparator.comparing(Messages::getTimeStamp));
 
         this.context = context;
         this.messagesArrayList = messagesArrayList;
@@ -142,15 +145,14 @@ public class MessageAdapter extends RecyclerView.Adapter {
                                                     receivedmsgID = snapshot.getId();
                                                     firestore.collection("chats").document(receiverUID).collection("messages received from").document(auth.getUid()).collection("messages").document(receivedmsgID).delete();
                                                 }
-
                                             }
                                             Log.d( "received msgID : ", receivedmsgID);
                                         }
                                     });
-                                    firestore.collection("chats").document(auth.getUid()).collection("messages sent to").document(receiverUID).collection("messages").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    firestore.collection("chats").document(auth.getUid()).collection("messages sent to").document(receiverUID).collection("messages").addSnapshotListener(new EventListener<QuerySnapshot>() {
                                         @Override
-                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                            if(queryDocumentSnapshots.isEmpty()){
+                                        public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+                                            if(value.isEmpty()){
                                                 firestore.collection("chats").document(auth.getUid()).collection("messages sent to").document(receiverUID).delete();
                                                 firestore.collection("chats").document(receiverUID).collection("messages received from").document(auth.getUid()).delete();
                                             }

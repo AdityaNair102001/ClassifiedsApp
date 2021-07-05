@@ -201,7 +201,9 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 chatMsg.setText("");
                 Date date = new Date();
-                Messages m = new Messages(receiverName, receiverImg, chat, senderUID, date.getTime());
+                long timeStamp = System.currentTimeMillis();
+
+                Messages m = new Messages(receiverName, receiverImg, chat, senderUID, timeStamp);
                 firestore.collection("chats").document(senderUID).set(m);
                 firestore.collection("chats").document(senderUID).collection("messages sent to").document(receiverUID).set(m);
 
@@ -217,7 +219,7 @@ public class ChatActivity extends AppCompatActivity {
                         if(task.isSuccessful()) {
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("chat", chat);
-                            long timeStamp = date.getTime();
+//                            Log.d("Time : ", ""+timeStamp);
                             if(buyerName!=null) {
                                 map.put("imageURI", buyerImage);
                                 map.put("senderName", buyerName);
@@ -228,6 +230,7 @@ public class ChatActivity extends AppCompatActivity {
                             }
                             map.put("timeStamp", timeStamp);
                             map.put("senderID", firebaseAuth.getUid());
+//                            Log.d("onComplete: " , "" + map);
                             firestore.collection("chats").document(receiverUID).set(map);
                             firestore.collection("chats").document(receiverUID).collection("messages received from").document(senderUID).set(map);
 

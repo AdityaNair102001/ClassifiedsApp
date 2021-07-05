@@ -23,44 +23,69 @@
             android:background="#F8F5F5">
 
 
-            <RelativeLayout
-                android:id="@+id/feedImageHolder"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+<!--            <RelativeLayout-->
+<!--                android:id="@+id/feedImageHolder"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/feedImage"-->
+<!--                    android:layout_width="293dp"-->
+<!--                    android:layout_height="155dp"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:paddingTop="5dp"-->
+<!--                    android:paddingBottom="5dp"-->
+<!--                    android:scaleType="centerInside"-->
+<!--                    app:srcCompat="@drawable/dogprofile" />-->
+
+<!--                <com.google.android.material.checkbox.MaterialCheckBox-->
+<!--                    android:id="@+id/likeBtn"-->
+<!--                    android:layout_width="24dp"-->
+<!--                    android:layout_height="26dp"-->
+<!--                    android:layout_alignParentTop="true"-->
+<!--                    android:layout_alignParentRight="true"-->
+<!--                    android:layout_marginEnd="8dp"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:background="@drawable/like_btn_drawable"-->
+<!--                    android:button="@null"-->
+<!--                    android:checked="false" />-->
+<!--            </RelativeLayout>-->
+
+            <ImageView
+                android:id="@+id/feedImage"
+                android:layout_width="293dp"
+                android:layout_height="155dp"
+                android:layout_marginTop="8dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:scaleType="centerInside"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/dogprofile" />
 
-                <ImageView
-                    android:id="@+id/feedImage"
-                    android:layout_width="293dp"
-                    android:layout_height="155dp"
-                    android:layout_marginTop="8dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/dogprofile" />
-
-                <com.google.android.material.checkbox.MaterialCheckBox
-                    android:id="@+id/likeBtn"
-                    android:layout_width="24dp"
-                    android:layout_height="26dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/like_btn_drawable"
-                    android:button="@null"
-                    android:checked="false" />
-            </RelativeLayout>
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/likeBtn"
+                android:layout_width="24dp"
+                android:layout_height="26dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/like_btn_drawable"
+                android:button="@null"
+                android:checked="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <TextView
                 android:id="@+id/productNameTextView"
                 android:layout_width="131dp"
                 android:layout_height="33dp"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="58dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/benneregular"
                 android:padding="0dp"
@@ -68,8 +93,8 @@
                 android:textColor="#151515"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/feedImageHolder"
-                app:layout_constraintTop_toBottomOf="@+id/feedImageHolder" />
+                app:layout_constraintStart_toStartOf="@+id/feedImage"
+                app:layout_constraintTop_toBottomOf="@+id/feedImage" />
 
             <TextView
                 android:id="@+id/priceTextView"

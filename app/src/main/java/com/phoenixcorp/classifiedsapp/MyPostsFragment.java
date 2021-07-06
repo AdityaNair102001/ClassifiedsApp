@@ -7,9 +7,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -73,6 +76,8 @@ public class MyPostsFragment extends Fragment {
 
     RecyclerView myPostList;
     CircularProgressIndicator pd;
+    ImageView noPostsImage;
+    TextView noPostsText;
 
 
     @Override
@@ -83,8 +88,13 @@ public class MyPostsFragment extends Fragment {
 
         myPostList=view.findViewById(R.id.myPosts);
         pd=view.findViewById(R.id.progressBarMyPosts);
+        noPostsImage=view.findViewById(R.id.noPostsImage);
+        noPostsText=view.findViewById(R.id.noPostsText);
 
-        pd.setVisibility(View.INVISIBLE);
+
+        pd.setVisibility(View.VISIBLE);
+        noPostsText.setVisibility(View.INVISIBLE);
+        noPostsImage.setVisibility(View.INVISIBLE);
 
         ArrayList<String> productNamesFromDB= new ArrayList<>();
         ArrayList<String> pricesFromDB=new ArrayList<>();
@@ -95,7 +105,6 @@ public class MyPostsFragment extends Fragment {
         HashMap<String, String> imageUrlsFromDB=new HashMap<>();
         HashMap<String,Boolean> likedPostsFromDB = new HashMap<>();
 
-        String[] names={"Aaloo","Bhujia","Vada","Dosa","Chamanti","Porota"};
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final String currentUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
@@ -111,6 +120,8 @@ public class MyPostsFragment extends Fragment {
                         locationFromDB.add(documentSnapshot.getString("location"));
                         documentID.add(documentSnapshot.getId());
 
+                        Log.e("123", "onComplete: "+"at 123" );
+
                         db.collection("users").document(currentUser).collection("my posts").document(documentSnapshot.getId()).collection("urls").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -118,12 +129,21 @@ public class MyPostsFragment extends Fragment {
                                         List<DocumentSnapshot> documentList=task.getResult().getDocuments();
                                         imageUrlsFromDB.put(documentSnapshot.getId(),documentList.get(documentList.size()-1).getString("url"));
 
+                                    Log.e("130", "onComplete: "+"at 130");
+
                                         adapterHandler(productNamesFromDB,productDescriptionFromDB,pricesFromDB,locationFromDB,imageUrlsFromDB,documentID,likedPostsFromDB);
                                 }
                             }
                         });
 
                     }
+
+                    if(documentID.isEmpty()){
+                        noPostsImage.setVisibility(View.VISIBLE);
+                        noPostsText.setVisibility(View.VISIBLE);
+                        pd.setVisibility(View.INVISIBLE);
+                    }
+
                 }
             }
         });
@@ -132,6 +152,8 @@ public class MyPostsFragment extends Fragment {
     }
 
     void adapterHandler(ArrayList<String> productNames,ArrayList<String>productDescription,ArrayList<String>prices,ArrayList<String>locations,HashMap<String,String>imageUrls,ArrayList<String>documentID,HashMap<String,Boolean> likedPosts){
+
+        pd.setVisibility(View.INVISIBLE);
 
         MyPostListAdapter adapter=new MyPostListAdapter(productNames,productDescription,prices,locations,imageUrls,documentID,likedPosts, this);
         myPostList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false));

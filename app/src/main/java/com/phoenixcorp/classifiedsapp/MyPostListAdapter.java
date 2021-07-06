@@ -38,6 +38,9 @@ public class MyPostListAdapter extends RecyclerView.Adapter<MyPostListAdapter.My
 
     MyPostsFragment myPostsFragment;
 
+    ImageView noPostsImage;
+    TextView noPostsText;
+
     public MyPostListAdapter(ArrayList<String> productNames,ArrayList<String>productDescriptions,ArrayList<String>prices,ArrayList<String>locations,HashMap<String,String>imageUrls,ArrayList<String>documentID,HashMap<String,Boolean> likedPosts, MyPostsFragment myPostsFragment){
         this.productNames=productNames;
         this.prices=prices;
@@ -120,19 +123,13 @@ public class MyPostListAdapter extends RecyclerView.Adapter<MyPostListAdapter.My
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position,productNames.size());
 
-//                    if(productNames.isEmpty()){
-//
-//                        noLikesLayout = likedPostsFragment.getActivity().findViewById(R.id.noLikes);
-//                        exploreAds = likedPostsFragment.getView().findViewById(R.id.noLikes_explore_ads_button);
-////                                    Toast.makeText(likedPostsFragment.getContext(),"No favorites yet", Toast.LENGTH_SHORT).show();
-//                        noLikesLayout.setVisibility(View.VISIBLE);
-//                        exploreAds.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                likedPostsFragment.startActivity(new Intent(likedPostsFragment.getContext(), DefaultPageActivity.class));
-//                            }
-//                        });
-//                    }
+                    if(productNames.isEmpty()){
+
+                        noPostsImage = myPostsFragment.getActivity().findViewById(R.id.noPostsImage);
+                        noPostsText = myPostsFragment.getView().findViewById(R.id.noPostsText);
+                        noPostsImage.setVisibility(View.VISIBLE);
+                        noPostsText.setVisibility(View.VISIBLE);
+                    }
                 }
             });
             builder.show();

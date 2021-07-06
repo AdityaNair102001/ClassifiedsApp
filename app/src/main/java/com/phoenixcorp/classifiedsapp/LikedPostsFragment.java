@@ -25,6 +25,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Document;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,9 +112,10 @@ public class LikedPostsFragment extends Fragment {
 
         db.collection("users").document(currentUser).collection("liked posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            public void  onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
                    for(DocumentSnapshot documentSnapshot: Objects.requireNonNull(task.getResult())){
+
                        productNamesFromDB.add(documentSnapshot.getString("productName"));
                        pricesFromDB.add(documentSnapshot.getString("price"));
                        productDescriptionsFromDB.add(documentSnapshot.getString("productDescription"));
@@ -124,6 +127,7 @@ public class LikedPostsFragment extends Fragment {
                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                if(task.isSuccessful()){
                                    List<DocumentSnapshot> documentList= Objects.requireNonNull(task.getResult()).getDocuments();
+
                                    imageUrlsFromDB.put(documentSnapshot.getId(),documentList.get(documentList.size()-1).getString("url"));
 
                                    adapterHandler(productNamesFromDB,productDescriptionsFromDB,pricesFromDB,locationsFromDB,imageUrlsFromDB,documentIDFromDB,likedPostsFromDB);
@@ -132,17 +136,17 @@ public class LikedPostsFragment extends Fragment {
                        });
 
                    }
-                   if(documentIDFromDB.isEmpty()){
-//                       Toast.makeText(getContext(),"No favorites yet", Toast.LENGTH_SHORT).show();
-                       noLikesLayout.setVisibility(View.VISIBLE);
-                       exploreAds.setOnClickListener(new View.OnClickListener() {
-                           @Override
-                           public void onClick(View view) {
-                               startActivity(new Intent(getContext(), DefaultPageActivity.class));
-                           }
-                       });
-                       pd.setVisibility(View.GONE);
-                   }
+
+                    if(documentIDFromDB.isEmpty()){
+                        noLikesLayout.setVisibility(View.VISIBLE);
+                        exploreAds.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                startActivity(new Intent(getContext(), DefaultPageActivity.class));
+                            }
+                        });
+                        pd.setVisibility(View.GONE);
+                    }
 
                 }
 

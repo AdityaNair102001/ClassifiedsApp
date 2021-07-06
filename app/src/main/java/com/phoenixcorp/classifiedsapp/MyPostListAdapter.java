@@ -120,7 +120,19 @@ public class MyPostListAdapter extends RecyclerView.Adapter<MyPostListAdapter.My
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position,productNames.size());
 
-
+//                    if(productNames.isEmpty()){
+//
+//                        noLikesLayout = likedPostsFragment.getActivity().findViewById(R.id.noLikes);
+//                        exploreAds = likedPostsFragment.getView().findViewById(R.id.noLikes_explore_ads_button);
+////                                    Toast.makeText(likedPostsFragment.getContext(),"No favorites yet", Toast.LENGTH_SHORT).show();
+//                        noLikesLayout.setVisibility(View.VISIBLE);
+//                        exploreAds.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                likedPostsFragment.startActivity(new Intent(likedPostsFragment.getContext(), DefaultPageActivity.class));
+//                            }
+//                        });
+//                    }
                 }
             });
             builder.show();

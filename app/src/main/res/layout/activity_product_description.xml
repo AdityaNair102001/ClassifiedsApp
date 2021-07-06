@@ -54,23 +54,25 @@
 
                 <TextView
                     android:id="@+id/desc_product_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="263dp"
                     android:layout_height="wrap_content"
-                    android:textSize="25dp"
+                    android:fontFamily="sans-serif-condensed-medium"
                     android:text="Test Product Name"
                     android:textColor="@color/black"
-                    android:fontFamily="sans-serif-condensed-medium"/>
+                    android:textSize="25dp" />
 
                 <TextView
                     android:id="@+id/desc_product_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@color/black"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
+                    android:layout_gravity="center_vertical"
                     android:text="₹150"
-                    android:textSize="20dp"/>
+                    android:layout_marginLeft="20dp"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/black"
+                    android:textSize="20dp" />
             </RelativeLayout>
 
             <LinearLayout

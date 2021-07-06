@@ -78,7 +78,6 @@ public class LikedPostListAdapter extends RecyclerView.Adapter<LikedPostListAdap
             holder.likeBtn.setChecked(true);
         }
 
-
         holder.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,7 +95,6 @@ public class LikedPostListAdapter extends RecyclerView.Adapter<LikedPostListAdap
                                 notifyItemRemoved(position);
                                 notifyItemRangeChanged(position,productNames.size());
 
-
                                 if(productNames.isEmpty()){
 
                                     noLikesLayout = likedPostsFragment.getActivity().findViewById(R.id.noLikes);
@@ -110,7 +108,6 @@ public class LikedPostListAdapter extends RecyclerView.Adapter<LikedPostListAdap
                                         }
                                     });
                                 }
-
                             }
                         }
                     });
@@ -131,7 +128,6 @@ public class LikedPostListAdapter extends RecyclerView.Adapter<LikedPostListAdap
 
             }
         });
-
     }
 
     @Override
@@ -157,8 +153,6 @@ public class LikedPostListAdapter extends RecyclerView.Adapter<LikedPostListAdap
             location=itemView.findViewById(R.id.likedPostLocation);
             postImage=itemView.findViewById(R.id.likedPostImage);
             likeBtn=itemView.findViewById(R.id.likedPostLikeBtn);
-
-
 
         }
     }

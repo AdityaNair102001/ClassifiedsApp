@@ -109,7 +109,7 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(AuthResult authResult) {
 
-                        Toast.makeText(SignupActivity.this, "User Created By Their Email.", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(SignupActivity.this, "User Created By Their Email.", Toast.LENGTH_SHORT).show();
 
 //                      Move to Verify Phone Number And store user details after the Phone Verification
                         Intent intent = new Intent(SignupActivity.this, VerifyPhoneNumber.class);

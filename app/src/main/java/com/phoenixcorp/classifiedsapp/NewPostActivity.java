@@ -186,7 +186,7 @@ public class NewPostActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<DocumentReference> task) {
                                     if(task.isSuccessful()){
                                         pd.dismiss();
-                                        Toast.makeText(NewPostActivity.this,"Images uploaded",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(NewPostActivity.this,"Posted Successfully!",Toast.LENGTH_LONG).show();
                                         Intent intent = new Intent(NewPostActivity.this, DefaultPageActivity.class);
                                         startActivity(intent);
 
@@ -201,7 +201,7 @@ public class NewPostActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentReference> task) {
                                     if(task.isSuccessful()){
-                                        Toast.makeText(NewPostActivity.this,"Images added to my posts",Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(NewPostActivity.this,"Images added to my posts",Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
@@ -244,7 +244,7 @@ public class NewPostActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(NewPostActivity.this,"Added to my posts",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(NewPostActivity.this,"Added to my posts",Toast.LENGTH_SHORT).show();
                 }
             }
         });

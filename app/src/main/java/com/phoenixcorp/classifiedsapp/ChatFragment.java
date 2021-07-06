@@ -211,7 +211,7 @@ public class ChatFragment extends Fragment {
                 }
                 else {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), "No Chats Yet!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "No Chats Yet!", Toast.LENGTH_SHORT).show();
                     emptyChatLayout.setVisibility(View.VISIBLE);
                 }
             }

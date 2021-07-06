@@ -102,7 +102,7 @@ public class VerifyPhoneNumber extends AppCompatActivity {
                 resendBtn.setVisibility(View.VISIBLE);
 
                 pd.dismiss();
-                Toast.makeText(VerifyPhoneNumber.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(VerifyPhoneNumber.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
 
             }
 
@@ -222,14 +222,14 @@ public class VerifyPhoneNumber extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             pd.dismiss();
-                            Toast.makeText(VerifyPhoneNumber.this, "User Details have been stored in the Database", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(VerifyPhoneNumber.this, "User Details have been stored in the Database", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "onSuccess: user Profile is created for " + userID);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             pd.dismiss();
-                            Toast.makeText(VerifyPhoneNumber.this, "User Details could NOT be stored in the Database", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(VerifyPhoneNumber.this, "User Details could NOT be stored in the Database", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "onFailure: " + e.toString());
                         }
                     });

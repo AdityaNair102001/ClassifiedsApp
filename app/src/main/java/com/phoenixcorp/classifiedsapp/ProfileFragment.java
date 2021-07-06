@@ -282,7 +282,7 @@ public class ProfileFragment extends Fragment {
         imageName.putFile(imageURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(getActivity(), "User Profile Image Added.", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "User Profile Image Added.", Toast.LENGTH_SHORT).show();
 
                 imageName.putFile(imageURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override

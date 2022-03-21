@@ -83,13 +83,14 @@
             android:layout_marginLeft="8dp"
             app:cardCornerRadius="35dp"
             app:cardBackgroundColor="@color/colorPrimary">
+
             <ImageView
-                android:paddingLeft="2dp"
                 android:layout_width="25dp"
-                android:layout_height="30dp"
-                app:tint="@color/white"
+                android:layout_height="20dp"
                 android:layout_gravity="center"
-                android:src="@drawable/send"/>
+                android:paddingLeft="2dp"
+                android:src="@drawable/send"
+                app:tint="@color/white" />
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 
